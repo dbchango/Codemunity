@@ -25,9 +25,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     print(size);
-    return Scaffold(
+    return Container(
        
-       body: Stack(
+       child: Stack(
          children: <Widget>[
            SafeArea(
              child: Padding(

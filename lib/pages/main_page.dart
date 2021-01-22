@@ -20,13 +20,13 @@ class _MainPageState extends State<MainPage> {
     HomeScreen(
       key: PageStorageKey('Home'),
     ),
-    CollectionScreen(
+    WriteArticleScreen(
       key: PageStorageKey('Write'),
     ),
     SearcScreen(
       key: PageStorageKey('Search'),
     ),
-    WriteArticleScreen(
+    CollectionScreen(
       key: PageStorageKey('Collection')
     )
   ];

@@ -12,7 +12,7 @@ class Articles{
   Articles();
   Articles.fromJsonList(List<dynamic> jsonList){
     for(var item in jsonList){
-      final article = Article.fromJsonMap(item);
+      final article = Article.fromJson(item);
       items.add(article);
     }
   }

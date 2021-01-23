@@ -1,10 +1,11 @@
 import 'package:code_munnity/models/author.dart';
+import 'package:code_munnity/utils/routes.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
 
 class ArticleService{
-  String _urlRoot = "https://consultoriovet-eb010.web.app/api/authors";
+  String _urlRoot = fireStoreURL+"authors";
 
   ArticleService();
 

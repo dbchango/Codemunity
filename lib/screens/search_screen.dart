@@ -1,6 +1,7 @@
 import 'package:code_munnity/models/article.dart';
 import 'package:code_munnity/pages/article_page.dart';
-import 'package:code_munnity/providers/article_service.dart';
+import 'package:code_munnity/providers/articles_service.dart';
+import 'package:code_munnity/widgets/article_box_widget.dart';
 import 'package:flutter/material.dart';
 
 class SearcScreen extends StatefulWidget {
@@ -34,6 +35,8 @@ class _SearcScreenState extends State<SearcScreen> {
     
   }
 
+  
+
   _loadArticles(){
     _service.getArticles().then((value) {
       _list = value;
@@ -54,19 +57,10 @@ class _SearcScreenState extends State<SearcScreen> {
             idArticle:article.id
           )));
       },
-      child:  Card(
-        elevation: 20.0,
-        shadowColor: Theme.of(context).primaryColorDark,
-        child: ListTile(
-          trailing: Icon(Icons.remove_red_eye),
-          leading: Container(
-       
-            child: Icon(Icons.library_books),
-          ),
-          title: Text(article.title),
-          subtitle: Text(article.author.name+" "+article.author.surname),
-          ),
-    ),);
+      child: ArticleBoxWidget(
+        title: article.title,
+      )
+    ,);
       
     
   }

@@ -21,13 +21,13 @@ class _MainPageState extends State<MainPage> {
       key: PageStorageKey('Home'),
     ),
     WriteArticleScreen(
-      key: PageStorageKey('Write'),
+      key: PageStorageKey('Escribir'),
     ),
     SearcScreen(
-      key: PageStorageKey('Search'),
+      key: PageStorageKey('Buscar'),
     ),
     CollectionScreen(
-      key: PageStorageKey('Collection')
+      key: PageStorageKey('Colecciones')
     )
   ];
 
@@ -39,7 +39,6 @@ class _MainPageState extends State<MainPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
@@ -48,13 +47,13 @@ class _MainPageState extends State<MainPage> {
     Author test = new Author(
       name: "Mayuko", 
       mail: "mayuko@mail.com",
-      avatar: "https://yt3.ggpht.com/ytc/AAUvwnivjbUJ86-ZYW6puGnhv0Rey-osg2TL00CF-sEXXw=s900-c-k-c0x00ffffff-no-rj"
+      avatarimgurl: "https://yt3.ggpht.com/ytc/AAUvwnivjbUJ86-ZYW6puGnhv0Rey-osg2TL00CF-sEXXw=s900-c-k-c0x00ffffff-no-rj"
       );
     return Scaffold(
         drawer: _getdrawer(test),
         appBar: AppBar(
           centerTitle: true,
-          title: Text('CodeMunnity'),
+          title: Text('CodeMmunity'),
         ),
         body: PageStorage(bucket: _bucket, child: _pages[_selectedIndex],),
         bottomNavigationBar: BottomNavigationBar(
@@ -95,7 +94,7 @@ class _MainPageState extends State<MainPage> {
               accountName: Text(author.name),
               accountEmail: Text(author.mail),
               currentAccountPicture: CircleAvatar(
-                                     backgroundImage: NetworkImage(author.avatar),
+                                     backgroundImage: NetworkImage(author.avatarimgurl),
                                      backgroundColor: Colors.transparent,
                                     ),
             ),
@@ -103,10 +102,6 @@ class _MainPageState extends State<MainPage> {
               leading: new Icon(Icons.account_circle_outlined),
               title: new Text("Profile"),
               onTap: () {
-                //update state
-                
-
-                // close Drawer window
                 Navigator.pop(context);
               },
             ),
@@ -115,10 +110,6 @@ class _MainPageState extends State<MainPage> {
               leading: new Icon(Icons.home),
               title: new Text("Profile"),
               onTap: () {
-                //update state
-                
-
-                // close Drawer window
                 Navigator.pop(context);
               },
             ),

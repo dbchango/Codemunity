@@ -1,4 +1,4 @@
-import 'package:code_munnity/models/user_collection.dart';
+
 
 class Author{
   String id;
@@ -7,9 +7,9 @@ class Author{
   String mail;
   String knowledgearea;
   String about;
-  String avatar;
-  Articles favorites;
-  Author({ this.id, this.name, this.surname, this.mail, this.knowledgearea, this.about, this.avatar });
+  String avatarimgurl;
+  
+  Author({ this.id, this.name, this.surname, this.mail, this.knowledgearea, this.about, this.avatarimgurl });
   Author.fromJsonMap(Map<dynamic, dynamic> json){
     if(json!=null){
       id = json['id'];
@@ -18,7 +18,7 @@ class Author{
       mail = json['mail'];
       knowledgearea = json['knowledgearea'];
       about = json['about'];
-      avatar = json['avatar'];
+      avatarimgurl = json['avatarimgurl'];
     } 
   }
 }

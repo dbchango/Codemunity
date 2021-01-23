@@ -1,6 +1,7 @@
 
 import 'package:code_munnity/models/article.dart';
-import 'package:code_munnity/providers/article_service.dart';
+import 'package:code_munnity/pages/article_page.dart';
+import 'package:code_munnity/providers/articles_service.dart';
 import 'package:code_munnity/widgets/article_box_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -25,43 +26,15 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     print(size);
-    return Container(
-       
-       child: Stack(
-         children: <Widget>[
-           SafeArea(
-             child: Padding(
+    return _list == null 
+    ? Center(child: Text("Loading articles...")): Padding(
                padding: const EdgeInsets.symmetric(horizontal: 12),
-               child: Column(
-                 crossAxisAlignment: CrossAxisAlignment.start,
-                 children: <Widget>[
-                   Expanded(
-                     child: Column(
-                       children: [
-                         ArticleBoxWidget(
-                             title: "My first post",
-                             content: "When I first tapped into personal development, I tried to build as many positive habits as possible."
-                                      +"I set up a morning routine, started to meditate, went to the gym frequently, and read at least one book per week."
-                                      +"Yet, a year later, I didn’t feel happier, more fulfilled, or improved."
-                                      +"And I didn’t understand why my life didn’t change even though I built all these new, powerful routines."
-                                      +"Change your habits and you’ll change your life is one of the bold promises of the self-help world and I didn’t know why it didn’t work for me."
-                                     
-                          ),
-                         ArticleBoxWidget(
-                           title: "My first post is the bes sample to begin with this projecto test"
-                         )
-                       ],
-                     )
-                    ) 
-                   
-
-                 ],
-               ),
-              )
-            )
-         ],
-       )
-    );
+               child: ListView(
+                 children: _list.items.map((e) {
+                   return _getArticleItem(e);
+                 }).toList(),
+               )
+              );
   }
 
   
@@ -72,6 +45,28 @@ class _HomeScreenState extends State<HomeScreen> {
         _list = value;
       });
     });
+  }
+
+  Widget _getArticleItem(Article article){
+    return GestureDetector(
+      onTap: (){
+        Navigator.push(
+          context, 
+          MaterialPageRoute(builder: 
+          (context)=>ArticlePage(
+            idArticle:article.id
+          )));
+      },
+      child: ArticleBoxWidget(
+        title: article.title,
+        author: article.author,
+        content: article.content,
+        stars: article.stars,
+        readers: article.readers,
+      )
+    ,);
+      
+    
   }
 
 }

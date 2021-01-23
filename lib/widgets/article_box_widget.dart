@@ -6,6 +6,9 @@ class ArticleBoxWidget extends StatelessWidget {
   final Author author;
   final String content;
   final Function press;
+  final int readers;
+  final int stars;
+
   //final String assetName;
   const ArticleBoxWidget(
     {
@@ -14,6 +17,8 @@ class ArticleBoxWidget extends StatelessWidget {
       this.author,
       this.content,
       this.press,
+      this.readers,
+      this.stars
       //this.assetName
     }
     ) : super(key: key);
@@ -44,7 +49,7 @@ class ArticleBoxWidget extends StatelessWidget {
                  color: Colors.transparent,
                  
                  child: Padding(
-                     padding: const EdgeInsets.all(20.0),
+                     padding: const EdgeInsets.all(15),
                      child: Column(
                        children: [
                          Row(
@@ -70,9 +75,6 @@ class ArticleBoxWidget extends StatelessWidget {
                              Row(
                                mainAxisAlignment: MainAxisAlignment.start,
                                children: [
-                                 Container(
-                    
-                                 ),
                                  Row(
                                    children: [
                                      Container(
@@ -82,19 +84,19 @@ class ArticleBoxWidget extends StatelessWidget {
                                           overflow: TextOverflow.ellipsis,
                                             text: TextSpan(
                                               style: TextStyle(color: Colors.black),
-                                              text:  author == null? "Mayuko":author.name  
+                                              text:  author == null? "None":author.name  
                                             ),
                                           ),
                                         
                                       ),
                                      ),
-                                     Expanded(
-                                   flex: 0,
-                                   child: CircleAvatar(
-                                     backgroundImage: NetworkImage('https://yt3.ggpht.com/ytc/AAUvwnivjbUJ86-ZYW6puGnhv0Rey-osg2TL00CF-sEXXw=s900-c-k-c0x00ffffff-no-rj'),
-                                     backgroundColor: Colors.transparent,
-                                    )
-                                  )
+                                     Padding(
+                                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                       child: CircleAvatar(
+                                       backgroundImage: NetworkImage(author.avatarimgurl),
+                                       backgroundColor: Colors.transparent,
+                                    ),
+                                     )
                                    ],
                                  ),
                                   
@@ -107,7 +109,7 @@ class ArticleBoxWidget extends StatelessWidget {
                            ],
                          ),
                          Container(
-                        
+                           padding: EdgeInsets.symmetric(vertical: screenWidth/20),
                            child: Align(
                            alignment: Alignment.topLeft,
                            child: RichText(
@@ -134,8 +136,9 @@ class ArticleBoxWidget extends StatelessWidget {
                                    padding: const EdgeInsets.all(4.0),
                                    child: Row(
                                      children: <Widget>[
-                                       Icon(Icons.remove_red_eye),
-                                       Text(" Viewers "),
+                                       Icon(Icons.remove_red_eye_outlined),
+                                       Text(readers.toString(), style: TextStyle(fontStyle: FontStyle.italic, ),),
+                                       Text(" Lectores " , style: TextStyle(fontWeight: FontWeight.bold, ),)
 
                                      ],
                                    ),
@@ -145,7 +148,8 @@ class ArticleBoxWidget extends StatelessWidget {
                                    child: Row(
                                      children: <Widget>[
                                        Icon(Icons.star_border),
-                                       Text(" Stars "),
+                                       Text(stars.toString(), style: TextStyle(fontStyle: FontStyle.italic, ),),
+                                       Text(" Estrellas ", style: TextStyle(fontWeight: FontWeight.bold,),)
                                        
                                      ],
                                    ),

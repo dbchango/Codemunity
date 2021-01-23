@@ -1,5 +1,5 @@
 import 'package:code_munnity/models/article.dart';
-import 'package:code_munnity/providers/article_service.dart';
+import 'package:code_munnity/providers/articles_service.dart';
 import 'package:flutter/material.dart';
 
 class ArticlePage extends StatefulWidget {

@@ -13,10 +13,14 @@ class SupporPage extends StatefulWidget {
 
 class _SupporPageState extends State<SupporPage> {
   SupportMessage _supportMessage = new SupportMessage();
-  var _size;
-  final formKey = GlobalKey<FormState>();
-  File _img ;
   SupportService _service = new SupportService();
+
+  final formKey = GlobalKey<FormState>();
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  var _size;
+  File _img ;
+  
   final picker = ImagePicker();
   @override
   Widget build(BuildContext context) {
@@ -86,13 +90,11 @@ class _SupporPageState extends State<SupporPage> {
     return GestureDetector(
       onTap: _submitForm,
       child: Container(
-     
         child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
                     width: _size*.7,
-                  
                     child: TextButton(onPressed: _submitForm, child: Container(
                       decoration: BoxDecoration(
                       color: Colors.amber,
@@ -106,7 +108,6 @@ class _SupporPageState extends State<SupporPage> {
                             padding: const EdgeInsets.all(4.0),
                             child: Icon(Icons.send),
                           ),
-                          
                         ],
                       ),
                     ))
@@ -117,7 +118,6 @@ class _SupporPageState extends State<SupporPage> {
       ),
     );
   }
-
 
   _getImgBox(){
     return  Padding(
@@ -184,10 +184,12 @@ class _SupporPageState extends State<SupporPage> {
     }
 
     _service.post(_supportMessage).then((value){
+      scaffoldKey.currentState.showSnackBar(
+          SnackBar(content: Text("No enviado")),
+        );
      if (value != null) {
         formKey.currentState.reset();
-      
-        Scaffold.of(context).showSnackBar(
+        scaffoldKey.currentState.showSnackBar(
           SnackBar(content: Text(value.text)),
         );
       }

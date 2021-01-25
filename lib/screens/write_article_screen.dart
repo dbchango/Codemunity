@@ -116,7 +116,7 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
                               borderRadius: BorderRadius.circular(5)
                             ),
                             
-                            child: IconButton(onPressed: _onTapAddRef, icon: Icon(Icons.add),)
+                            child: IconButton(onPressed: _onTapAddRef, icon: Icon(Icons.add, color: Theme.of(context).accentColor,),)
                           ),
                           Padding(
                                     padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 15),
@@ -151,7 +151,7 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
                               borderRadius: BorderRadius.circular(5)
                             ),
                             
-                            child: TextButton(onPressed: _onTapDeleteRef, child: Icon(Icons.remove))
+                            child: TextButton(onPressed: _onTapDeleteRef, child: Icon(Icons.remove, color: Theme.of(context).accentColor))
                           ),
                         ],
                       )

@@ -28,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
     print(size);
     return _list == null 
     ? Center(child: Text("Loading articles...")): Padding(
-               padding: const EdgeInsets.symmetric(horizontal: 12),
+               padding: const EdgeInsets.symmetric(horizontal: 5),
                child: ListView(
                  children: _list.items.map((e) {
                    return _getArticleItem(e);

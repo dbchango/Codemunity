@@ -1,4 +1,5 @@
 import 'package:code_munnity/models/author.dart';
+import 'package:code_munnity/pages/maps_page.dart';
 import 'package:code_munnity/pages/profile_page.dart';
 import 'package:code_munnity/pages/support_PAGE.dart';
 import 'package:code_munnity/screens/collection_screen.dart';
@@ -59,7 +60,10 @@ class _MainPageState extends State<MainPage> {
         drawer: getdrawer(test),
         appBar: AppBar(
           centerTitle: true,
-          title: Text('CodeMmunity'),
+          title: Container(
+            height: 50,
+            child: Image.asset('assets/images/logo_white_letters.png', fit: BoxFit.cover,)
+            ),
         ),
         body: PageStorage(bucket: _bucket, child: _pages[_selectedIndex],),
         bottomNavigationBar: BottomNavigationBar(
@@ -84,7 +88,7 @@ class _MainPageState extends State<MainPage> {
 
               ],
               currentIndex: _selectedIndex,
-              selectedItemColor: Colors.amber,
+              selectedItemColor: Theme.of(context).accentColor,
               onTap: _onItemTapped,
          
           ),
@@ -107,24 +111,32 @@ class _MainPageState extends State<MainPage> {
                                      backgroundColor: Colors.transparent,
                                     ),
             ),
+            
+            
             ListTile(
               leading: new Icon(Icons.account_circle_outlined),
+              title: new Text("Perfil"),
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context)=> ProfilePage()));
+              },
+            ),
+            Divider(),
+            ListTile(
+              leading: new Icon(Icons.map),
+              title: new Text("Mapas"),
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context)=> MapsPage()));
+              },
+            ),
+            Divider(),
+            ListTile(
+              leading: new Icon(Icons.support),
               title: new Text("Soporte"),
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context)=> SupporPage()));
               },
             ),
             Divider(),
-            
-            ListTile(
-              leading: new Icon(Icons.home),
-              title: new Text("Profile"),
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context)=> ProfilePage()));
-              },
-            ),
-            Divider(),
-            
             
         ],
       ),

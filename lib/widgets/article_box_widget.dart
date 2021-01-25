@@ -26,22 +26,18 @@ class ArticleBoxWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    
     return Card(
-      child:ClipRRect(
-         borderRadius: BorderRadius.circular(10),
-         child: Column(
+      child:Column(
            children: [
              Container(
                decoration: BoxDecoration(
-                 color: Colors.white,
-                 borderRadius: BorderRadius.circular(12),
+                 borderRadius: BorderRadius.circular(15),
                  boxShadow: [
                    BoxShadow(
                      offset: Offset(0, 17),
                      blurRadius: 17,
                      spreadRadius: -23,
-                     color: Colors.grey
+                     color: Colors.transparent
                    )
                  ]
                ),
@@ -83,7 +79,6 @@ class ArticleBoxWidget extends StatelessWidget {
                                         child: RichText(
                                           overflow: TextOverflow.ellipsis,
                                             text: TextSpan(
-                                              style: TextStyle(color: Colors.black),
                                               text:  author == null? "None":author.name  
                                             ),
                                           ),
@@ -144,25 +139,20 @@ class ArticleBoxWidget extends StatelessWidget {
                                        Icon(Icons.star_border),
                                        Text(stars.toString(), style: TextStyle(fontStyle: FontStyle.italic, ),),
                                        Text(" Estrellas ", style: TextStyle(fontWeight: FontWeight.bold,),)
-                                       
+
                                      ],
                                    ),
                                  )
-                                 
-
                                ],
                              ),
                            )
                          ),
-                         
                        ],
                      ),
                     ),
                 ),
              ),
-             
            ],
-         ),
-       ));
+         ),);
   }
 }

@@ -1,9 +1,12 @@
 import 'package:code_munnity/models/author.dart';
+import 'package:code_munnity/pages/profile_page.dart';
+import 'package:code_munnity/pages/support_PAGE.dart';
 import 'package:code_munnity/screens/collection_screen.dart';
 import 'package:code_munnity/screens/home_screen.dart';
 import 'package:code_munnity/screens/search_screen.dart';
 import 'package:code_munnity/screens/write_article_screen.dart';
 import 'package:flutter/material.dart';
+
 
 class MainPage extends StatefulWidget {
   MainPage({Key key}) : super(key: key);
@@ -28,6 +31,9 @@ class _MainPageState extends State<MainPage> {
     ),
     CollectionScreen(
       key: PageStorageKey('Colecciones')
+    ),
+    SupporPage(
+      key: PageStorageKey('Soporte')
     )
   ];
 
@@ -50,7 +56,7 @@ class _MainPageState extends State<MainPage> {
       avatarimgurl: "https://yt3.ggpht.com/ytc/AAUvwnivjbUJ86-ZYW6puGnhv0Rey-osg2TL00CF-sEXXw=s900-c-k-c0x00ffffff-no-rj"
       );
     return Scaffold(
-        drawer: _getdrawer(test),
+        drawer: getdrawer(test),
         appBar: AppBar(
           centerTitle: true,
           title: Text('CodeMmunity'),
@@ -84,12 +90,15 @@ class _MainPageState extends State<MainPage> {
           ),
           
     );
+
+    
   }
 
-  Widget _getdrawer(Author author){
+  Widget getdrawer(Author author){
     return Drawer(
       child: ListView(
         children: <Widget>[
+
             UserAccountsDrawerHeader(
               accountName: Text(author.name),
               accountEmail: Text(author.mail),
@@ -100,24 +109,28 @@ class _MainPageState extends State<MainPage> {
             ),
             ListTile(
               leading: new Icon(Icons.account_circle_outlined),
-              title: new Text("Profile"),
+              title: new Text("Soporte"),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (context)=> SupporPage()));
               },
             ),
             Divider(),
+            
             ListTile(
               leading: new Icon(Icons.home),
               title: new Text("Profile"),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (context)=> ProfilePage()));
               },
             ),
             Divider(),
+            
             
         ],
       ),
     );
   }
+
+  
 
 }

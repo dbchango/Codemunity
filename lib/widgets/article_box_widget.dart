@@ -102,10 +102,6 @@ class ArticleBoxWidget extends StatelessWidget {
                                   
                                ],
                              ),
-                             //Spacer(),
-                             //SvgPicture.asset(assetName),
-                             
-                             
                            ],
                          ),
                          Container(
@@ -125,9 +121,7 @@ class ArticleBoxWidget extends StatelessWidget {
                                ),
                          ),
                          ),
-                    
-                         Container(
-                           
+                         Container(          
                            child: Padding(
                              padding: const EdgeInsets.all(6.0),
                              child: Row(

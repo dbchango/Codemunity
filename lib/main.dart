@@ -1,3 +1,6 @@
+import 'package:code_munnity/pages/login_page.dart';
+import 'package:code_munnity/pages/register_page.dart';
+import 'package:code_munnity/pages/support_page.dart';
 import 'package:flutter/material.dart';
 import 'package:code_munnity/pages/main_page.dart';
 
@@ -28,7 +31,11 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       routes: {
-        '/': (BuildContext context) => MainPage()
+        '/': (BuildContext context) => MainPage(),
+        '/support': (BuildContext context) => SupporPage(),
+        '/register': (BuildContext context) => RegisterPage(),
+        '/login' : (BuildContext context) => LoginPage(),
+
       },
     );
   }

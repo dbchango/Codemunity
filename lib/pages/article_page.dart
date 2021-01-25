@@ -28,9 +28,10 @@ class _ArticlePageState extends State<ArticlePage> {
          centerTitle: true,
          title: _currentArticle == null ? Text('Articulo'):Text(_currentArticle.title ?? ""),
        ),
-       body: _currentArticle == null ? Center(child:  Container(height:25.0, width:25.0, child: CircularProgressIndicator())):CustomScrollView(slivers: [
+       body: _currentArticle == null ? Center(child:  Container(height:25.0, width:25.0, child: CircularProgressIndicator())):
+       CustomScrollView(slivers: [
         _appBar(_currentArticle.title),
-        SliverList(delegate: SliverChildListDelegate([Text(_currentArticle.title), SizedBox(height: 15.0,)]))
+        SliverList(delegate: SliverChildListDelegate([Text(_currentArticle.content), SizedBox(height: 15.0,)]))
       ],) 
     );
   }

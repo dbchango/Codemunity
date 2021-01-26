@@ -27,6 +27,9 @@ class ArticleBoxWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     return Card(
+      color: Theme.of(context).cardColor,
+      elevation: 4,
+      shadowColor: Theme.of(context).backgroundColor,
       child:Column(
            children: [
              Container(
@@ -79,7 +82,11 @@ class ArticleBoxWidget extends StatelessWidget {
                                         child: RichText(
                                           overflow: TextOverflow.ellipsis,
                                             text: TextSpan(
-                                              text:  author == null? "None":author.name  
+                                              text:  author == null? "None":author.name,
+                                              style: Theme.of(context)
+                                                      .textTheme
+                                                      .headline6
+                                                      .copyWith(fontSize: 15,)
                                             ),
                                           ),
                                         
@@ -104,7 +111,7 @@ class ArticleBoxWidget extends StatelessWidget {
                            child: Align(
                            alignment: Alignment.topLeft,
                            child: RichText(
-                                 maxLines: 13,
+                                 maxLines: 7,
                                  text: TextSpan(
                                    style: Theme.of(context)
                                    .textTheme

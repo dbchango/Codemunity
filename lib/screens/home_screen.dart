@@ -27,14 +27,18 @@ class _HomeScreenState extends State<HomeScreen> {
     var size = MediaQuery.of(context).size;
     print(size);
     return _list == null 
-    ? Center(child: Text("Loading articles...")): Padding(
-               padding: const EdgeInsets.symmetric(horizontal: 5),
-               child: ListView(
-                 children: _list.items.map((e) {
-                   return _getArticleItem(e);
-                 }).toList(),
-               )
-              );
+    ? Center(child: Text("Loading articles...")): Container(
+      
+      child: Padding(
+                
+                 padding: const EdgeInsets.symmetric(horizontal: 5),
+                 child: ListView(
+                   children: _list.items.map((e) {
+                     return _getArticleItem(e);
+                   }).toList(),
+                 )
+                ),
+    );
   }
 
   

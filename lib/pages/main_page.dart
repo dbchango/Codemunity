@@ -75,15 +75,15 @@ class _MainPageState extends State<MainPage> {
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.create),
-                  label: 'Write'
+                  label: 'Escribir'
                 ),
                  BottomNavigationBarItem(
                   icon: Icon(Icons.search),
-                  label: 'Search'
+                  label: 'Buscar'
                 ),
                  BottomNavigationBarItem(
                   icon: Icon(Icons.collections_bookmark_outlined),
-                  label: 'Collections'
+                  label: 'Colecciones'
                 )
 
               ],

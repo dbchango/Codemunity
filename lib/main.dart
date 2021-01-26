@@ -16,27 +16,17 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       themeMode: ThemeMode.light,
       darkTheme: ThemeData(
+        cardColor: Colors.black26,
         primaryColor: Colors.black,
         brightness: Brightness.dark,
         accentColor: Colors.black
       ),
       
       theme: ThemeData(
-        
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
+        cardColor: Colors.white,
+        bottomAppBarColor: Colors.indigo[300],
         primaryColorDark: Colors.black,
         primarySwatch: Colors.indigo,
-        // This makes the visual density adapt to the platform that you run
-        // the app on. For desktop platforms, the controls will be smaller and
-        // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       routes: {
@@ -44,7 +34,6 @@ class MyApp extends StatelessWidget {
         '/support': (BuildContext context) => SupporPage(),
         '/register': (BuildContext context) => RegisterPage(),
         '/login' : (BuildContext context) => LoginPage(),
-
       },
     );
   }

@@ -26,13 +26,82 @@ class _ArticlePageState extends State<ArticlePage> {
     return Scaffold(
        appBar: AppBar(
          centerTitle: true,
-         title: _currentArticle == null ? Text('Articulo'):Text(_currentArticle.title ?? ""),
+          title: Container(
+            height: 50,
+            child: Image.asset('assets/images/logo_white_letters.png', fit: BoxFit.cover,)
+            ),
        ),
-       body: _currentArticle == null ? Center(child:  Container(height:25.0, width:25.0, child: CircularProgressIndicator())):
-       CustomScrollView(slivers: [
-        _appBar(_currentArticle.title),
-        SliverList(delegate: SliverChildListDelegate([Text(_currentArticle.content), SizedBox(height: 15.0,)]))
-      ],) 
+       body: _currentArticle == null ? 
+       Center(
+         child:  Container(
+           height:25.0, 
+           width:25.0, 
+           child: CircularProgressIndicator()
+          )
+       ):
+       Container(
+         padding: EdgeInsets.all(40),
+         child: ListView(
+           children: <Widget>[
+             Padding(
+               padding: EdgeInsets.only(bottom: 10),
+               child: Text(_currentArticle.title, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+             ),
+             Padding(
+               padding: EdgeInsets.symmetric(vertical: 4),
+               child: Row(
+                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                 children: <Widget>[
+                   Text("Date"),
+                   Row(
+                     children: [
+                       Container(
+                          child: Flexible(
+                          flex: 0,
+                          child: RichText(
+                            overflow: TextOverflow.ellipsis,
+                              text: TextSpan(
+                                text:  _currentArticle.author == null? "None":_currentArticle.author.name,
+                                style: Theme.of(context)
+                                        .textTheme
+                                        .headline6
+                                        .copyWith(fontSize: 15,)
+                              ),
+                            ),
+                          
+                        ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: CircleAvatar(
+                                backgroundImage: NetworkImage(_currentArticle.author.avatarimgurl),
+                                backgroundColor: Colors.transparent,
+                          ),
+                        ),
+                     ],
+                   )
+                 ],
+               ),
+             ),
+             Padding(
+               padding: const EdgeInsets.symmetric(vertical: 10),
+               child: FadeInImage(
+                placeholder: AssetImage('assets/images/data_sciences.jpeg'),
+            
+                image: AssetImage('assets/images/data_structures.jpg'),
+                fit: BoxFit.cover,
+               ),
+             ),
+             Text(_currentArticle.content)
+           ],
+         ),
+       )
+       /*
+       CustomScrollView(
+         slivers: [
+          SliverList(delegate: SliverChildListDelegate([Text(_currentArticle.content), SizedBox(height: 15.0,)]))
+         ],
+       ) */
     );
   }
 

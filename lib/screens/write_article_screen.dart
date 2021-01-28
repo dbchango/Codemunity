@@ -1,3 +1,4 @@
+import 'package:code_munnity/theme/constants.dart';
 import 'package:flutter/material.dart';
 
 class WriteArticleScreen extends StatefulWidget {
@@ -21,7 +22,7 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
     _size = MediaQuery.of(context).size.width;
 
     return Container(
-       padding:  EdgeInsets.all(40),
+       padding: colElementsPadding(),
        child: Form(
          key: _formKey,
          child: _getFormContent()
@@ -61,7 +62,7 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
     return ListView(
            children: <Widget>[
            Padding(
-             padding: const EdgeInsets.symmetric(horizontal: 2),
+             padding: const EdgeInsets.symmetric(horizontal: 10),
              child: Container(child: Text("Nueva Publicación" ,maxLines: 1,style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),)),
            ),
            Padding(

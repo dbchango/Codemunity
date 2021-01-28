@@ -27,6 +27,7 @@ dependencies:
   mime_type: ^0.3.2
   flutter:
     sdk: flutter
+  intl: ^0.16.1
     
 
 
@@ -54,6 +55,7 @@ flutter:
   assets:
      - assets/images/
      - assets/icons/
+     - assets/data/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

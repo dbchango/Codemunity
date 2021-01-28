@@ -1,6 +1,9 @@
 import 'package:code_munnity/models/article.dart';
 import 'package:code_munnity/providers/articles_service.dart';
+import 'package:code_munnity/theme/constants.dart';
+import 'package:code_munnity/widgets/author_box_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class ArticlePage extends StatefulWidget {
   final String idArticle;
@@ -13,12 +16,16 @@ class ArticlePage extends StatefulWidget {
 class _ArticlePageState extends State<ArticlePage> {
   Article _currentArticle;
   ArticleService _service;
-
+  DateTime date;
+  var hourFormated;
+  var dateFormated;
+  List<Reference> list = List();
   @override
   void initState() {
     _service = new ArticleService();
     super.initState();
     _loadArticle();
+    
   }
   
   @override
@@ -40,91 +47,53 @@ class _ArticlePageState extends State<ArticlePage> {
           )
        ):
        Container(
-         padding: EdgeInsets.all(40),
          child: ListView(
            children: <Widget>[
              Padding(
-               padding: EdgeInsets.only(bottom: 10),
-               child: Text(_currentArticle.title, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+               padding: topElementsPadding(),
+               child: Text(_currentArticle.title, style: titleStyles(),),
              ),
              Padding(
-               padding: EdgeInsets.symmetric(vertical: 4),
+               padding: colElementsPadding(),
                child: Row(
                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                  children: <Widget>[
-                   Text("Date"),
-                   Row(
-                     children: [
-                       Container(
-                          child: Flexible(
-                          flex: 0,
-                          child: RichText(
-                            overflow: TextOverflow.ellipsis,
-                              text: TextSpan(
-                                text:  _currentArticle.author == null? "None":_currentArticle.author.name,
-                                style: Theme.of(context)
-                                        .textTheme
-                                        .headline6
-                                        .copyWith(fontSize: 15,)
-                              ),
-                            ),
-                          
-                        ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: CircleAvatar(
-                                backgroundImage: NetworkImage(_currentArticle.author.avatarimgurl),
-                                backgroundColor: Colors.transparent,
-                          ),
-                        ),
-                     ],
+                   Text(dateFormated+" "+hourFormated),
+                   AuthorBoxWidget(
+                     author: _currentArticle.author,
                    )
                  ],
                ),
              ),
              Padding(
-               padding: const EdgeInsets.symmetric(vertical: 10),
+               padding: imageNearBorder(),
                child: FadeInImage(
-                placeholder: AssetImage('assets/images/data_sciences.jpeg'),
-            
-                image: AssetImage('assets/images/data_structures.jpg'),
+                placeholder: AssetImage('assets/images/logo_white_bg.png'),
+                image: NetworkImage(_currentArticle.imgurl),
                 fit: BoxFit.cover,
                ),
              ),
-             Text(_currentArticle.content)
+             Padding(
+               padding: colElementsPadding(),
+               child: Text(_currentArticle.content, style: textStyles(),),
+             ),
+             Padding(
+               padding: colElementsPadding(),
+               child: Text("Referencias", style: subtitleStyles(),),
+             ),
+             Padding(
+               padding: colElementsPadding(),
+               child: Column(
+                 mainAxisAlignment: MainAxisAlignment.end,
+                 children: list == null ? []:list.map((e) {
+                   return _getReference(e);
+                 }).toList(),
+               ),
+             )
            ],
          ),
        )
-       /*
-       CustomScrollView(
-         slivers: [
-          SliverList(delegate: SliverChildListDelegate([Text(_currentArticle.content), SizedBox(height: 15.0,)]))
-         ],
-       ) */
     );
-  }
-
-  Widget _appBar(String title){
-   return SliverAppBar(
-     backgroundColor: 
-     Theme.of(context).primaryColor, 
-     pinned: true,
-     expandedHeight: 200.0, 
-     flexibleSpace: FlexibleSpaceBar(
-       centerTitle: true,
-       title: Text(title),
-       background: FadeInImage(
-         placeholder: AssetImage('assets/images/data_sciences.jpeg'),
-       
-         image: AssetImage('assets/images/data_structures.jpg'),
-         fit: BoxFit.cover,
-        ),
-       
-       
-         
-     ),
-   );
   }
 
   _loadArticle(){
@@ -132,9 +101,17 @@ class _ArticlePageState extends State<ArticlePage> {
       _currentArticle = value;
       print(widget.idArticle);
       setState(() {
-        
+        date = DateTime.fromMillisecondsSinceEpoch(_currentArticle.date.seconds*1000);
+        hourFormated = DateFormat.jm().format(date);
+        dateFormated = DateFormat.yMMMEd().format(date);
+        list = _currentArticle.references.getReferences();
+        print(list[0].reference);
       });
     });
+  }
+
+  Widget _getReference(Reference ref){
+    return Text("["+(list.indexOf(ref)+1).toString()+"] "+ref.reference, textAlign: TextAlign.left,);
   }
 
 }

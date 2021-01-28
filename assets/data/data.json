@@ -1,0 +1,16 @@
+[
+    {
+        "name":"Library 1",
+        "location":{
+            "longitud": "",
+            "latitude":""
+        }
+    },
+    {
+        "name":"Library 2",
+        "location":{
+            "longitud": "",
+            "latitude":""
+        }
+    }
+]

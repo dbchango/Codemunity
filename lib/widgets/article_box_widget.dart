@@ -1,4 +1,5 @@
 import 'package:code_munnity/models/author.dart';
+import 'package:code_munnity/widgets/author_box_widget.dart';
 import 'package:flutter/material.dart';
 
 class ArticleBoxWidget extends StatelessWidget {
@@ -46,7 +47,6 @@ class ArticleBoxWidget extends StatelessWidget {
                ),
                child: Material(
                  color: Colors.transparent,
-                 
                  child: Padding(
                      padding: const EdgeInsets.all(15),
                      child: Column(
@@ -71,39 +71,9 @@ class ArticleBoxWidget extends StatelessWidget {
                                    ),
                              ),
                              ),
-                             Row(
-                               mainAxisAlignment: MainAxisAlignment.start,
-                               children: [
-                                 Row(
-                                   children: [
-                                     Container(
-                                       child: Flexible(
-                                        flex: 0,
-                                        child: RichText(
-                                          overflow: TextOverflow.ellipsis,
-                                            text: TextSpan(
-                                              text:  author == null? "None":author.name,
-                                              style: Theme.of(context)
-                                                      .textTheme
-                                                      .headline6
-                                                      .copyWith(fontSize: 15,)
-                                            ),
-                                          ),
-                                        
-                                      ),
-                                     ),
-                                     Padding(
-                                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                       child: CircleAvatar(
-                                       backgroundImage: NetworkImage(author.avatarimgurl),
-                                       backgroundColor: Colors.transparent,
-                                    ),
-                                     )
-                                   ],
-                                 ),
-                                  
-                               ],
-                             ),
+                             AuthorBoxWidget(
+                               author: author,
+                             )
                            ],
                          ),
                          Container(
@@ -128,28 +98,8 @@ class ArticleBoxWidget extends StatelessWidget {
                              padding: const EdgeInsets.all(6.0),
                              child: Row(
                                children: <Widget>[
-                                 Padding(
-                                   padding: const EdgeInsets.all(4.0),
-                                   child: Row(
-                                     children: <Widget>[
-                                       Icon(Icons.remove_red_eye_outlined),
-                                       Text(readers.toString(), style: TextStyle(fontStyle: FontStyle.italic, ),),
-                                       Text(" Lectores " , style: TextStyle(fontWeight: FontWeight.bold, ),)
-
-                                     ],
-                                   ),
-                                 ),
-                                 Padding(
-                                   padding: const EdgeInsets.all(4.0),
-                                   child: Row(
-                                     children: <Widget>[
-                                       Icon(Icons.star_border),
-                                       Text(stars.toString(), style: TextStyle(fontStyle: FontStyle.italic, ),),
-                                       Text(" Estrellas ", style: TextStyle(fontWeight: FontWeight.bold,),)
-
-                                     ],
-                                   ),
-                                 )
+                                 _getCounter(" Lectores ", Icons.remove_red_eye_outlined, readers),
+                                 _getCounter(" Estrellas ", Icons.star_border, stars),
                                ],
                              ),
                            )
@@ -160,6 +110,21 @@ class ArticleBoxWidget extends StatelessWidget {
                 ),
              ),
            ],
-         ),);
+         ),
+        );
   }
+  
+  Widget _getCounter(String label, IconData icon, int number){
+      return Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: Row(
+          children: <Widget>[
+            Icon(icon),
+            Text(number.toString(), style: TextStyle(fontStyle: FontStyle.italic, ),),
+            Text(label, style: TextStyle(fontWeight: FontWeight.bold,),)
+
+          ],
+        ),
+      );
+    }
 }

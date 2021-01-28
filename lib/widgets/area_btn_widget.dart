@@ -17,7 +17,7 @@ class AreaButtonWidget extends StatelessWidget {
       
         decoration: BoxDecoration(
           border: Border.all(
-            color: Colors.black26
+            color: Theme.of(context).primaryColorLight
           ),
           color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(13),
@@ -39,7 +39,7 @@ class AreaButtonWidget extends StatelessWidget {
               child: Column(
                 children: <Widget>[
                   Spacer(),
-                  Image.asset(svgSrc, height: 50,color: Theme.of(context).bottomAppBarColor,),
+                  Image.asset(svgSrc, height: 50,color: Theme.of(context).primaryColorLight,),
                   Spacer(),
                   Text(
                     title, 
@@ -47,7 +47,7 @@ class AreaButtonWidget extends StatelessWidget {
                     style: Theme.of(context)
                             .textTheme
                             .headline1
-                            .copyWith(fontSize: 13, ),
+                            .copyWith(fontSize: 13, color: Theme.of(context).primaryColorLight),
                   )
                 ]
               ),

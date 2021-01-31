@@ -1,9 +1,12 @@
 import 'package:code_munnity/models/article.dart';
 import 'package:code_munnity/providers/articles_service.dart';
 import 'package:code_munnity/theme/constants.dart';
+import 'package:code_munnity/widgets/article_content_widget.dart';
 import 'package:code_munnity/widgets/author_box_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
+import 'package:zefyr/zefyr.dart';
 
 class ArticlePage extends StatefulWidget {
   final String idArticle;
@@ -46,56 +49,13 @@ class _ArticlePageState extends State<ArticlePage> {
            child: CircularProgressIndicator()
           )
        ):
-       Container(
-         child: ListView(
-           children: <Widget>[
-             Padding(
-               padding: topElementsPadding(),
-               child: Text(_currentArticle.title, style: titleStyles(),),
-             ),
-             Padding(
-               padding: colElementsPadding(),
-               child: Row(
-                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                 children: <Widget>[
-                   Text(dateFormated+" "+hourFormated),
-                   AuthorBoxWidget(
-                     author: _currentArticle.author,
-                   )
-                 ],
-               ),
-             ),
-             Padding(
-               padding: imageNearBorder(),
-               child: FadeInImage(
-                placeholder: AssetImage('assets/images/logo_white_bg.png'),
-                image: NetworkImage(_currentArticle.imgurl),
-                fit: BoxFit.cover,
-               ),
-             ),
-             Padding(
-               padding: colElementsPadding(),
-               child: Text(_currentArticle.content, style: textStyles(),),
-             ),
-             Padding(
-               padding: colElementsPadding(),
-               child: Text("Referencias", style: subtitleStyles(),),
-             ),
-             Padding(
-               padding: colElementsPadding(),
-               child: Column(
-                 mainAxisAlignment: MainAxisAlignment.end,
-                 children: list == null ? []:list.map((e) {
-                   return _getReference(e);
-                 }).toList(),
-               ),
-             )
-           ],
-         ),
+       ZefyrScaffold(
+         child: _getArticleBody()
        )
     );
   }
 
+  ///This function retrieve an article
   _loadArticle(){
     _service.getArticle(widget.idArticle).then((value){
       _currentArticle = value;
@@ -104,14 +64,80 @@ class _ArticlePageState extends State<ArticlePage> {
         date = DateTime.fromMillisecondsSinceEpoch(_currentArticle.date.seconds*1000);
         hourFormated = DateFormat.jm().format(date);
         dateFormated = DateFormat.yMMMEd().format(date);
-        list = _currentArticle.references.getReferences();
+        list = _currentArticle.references.references;
         print(list[0].reference);
       });
     });
   }
 
+  ///This function return article body container 
+  Widget _getArticleBody(){
+    return Container(
+           child: ListView(
+             children: <Widget>[
+               Padding(
+                 padding: topElementsPadding(),
+                 child: Text(_currentArticle.title, style: titleStyles(),),
+               ),
+               Padding(
+                 padding: colElementsPadding(),
+                 child: Row(
+                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                   children: <Widget>[
+                     Text(dateFormated+" "+hourFormated),
+                     AuthorBoxWidget(
+                       author: _currentArticle.author,
+                     )
+                   ],
+                 ),
+               ),
+               Padding(
+                 padding: imageNearBorder(),
+                 child: FadeInImage(
+                  placeholder: AssetImage('assets/images/logo_white_bg.png'),
+                  image: NetworkImage(_currentArticle.imgurl),
+                  fit: BoxFit.cover,
+                 ),
+               ),
+               Padding(
+                 padding: colElementsPadding(),
+                 child: ArticleContentWidget(
+                   content: _currentArticle.content,
+                  ),
+               ),
+               Padding(
+                 padding: colElementsPadding(),
+                 child: Text("Referencias", style: subtitleStyles(),),
+               ),
+               Padding(
+                 padding: colElementsPadding(),
+                 child: Container(
+                    decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(5)
+                   ),
+                   width: double.infinity,
+                   child: Column(
+                     
+                     mainAxisAlignment: MainAxisAlignment.spaceAround,
+                     children: list == null ? []:list.map((e) {
+                       return _getReference(e);
+                     }).toList(),
+                   ),
+                 ),
+               )
+             ],
+           ),
+         );
+  }
+
+  ///This function return the article references
   Widget _getReference(Reference ref){
-    return Text("["+(list.indexOf(ref)+1).toString()+"] "+ref.reference, textAlign: TextAlign.left,);
+    return Container(
+      alignment: Alignment.centerLeft,
+   
+      child: Text("[${(list.indexOf(ref)+1).toString()}] ${ref.reference}", textAlign: TextAlign.left,)
+    );
   }
 
 }

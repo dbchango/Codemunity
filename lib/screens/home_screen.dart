@@ -64,7 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: ArticleBoxWidget(
         title: article.title,
         author: article.author,
-        content: article.content,
+        abstract: article.abstract,
         stars: article.stars,
         readers: article.readers,
       )

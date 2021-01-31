@@ -1,25 +1,20 @@
 import 'dart:convert';
 
-import 'package:code_munnity/models/quill_article.dart';
-import 'package:code_munnity/pages/article_page.dart';
-import 'package:code_munnity/pages/quill_article_page.dart';
-import 'package:code_munnity/providers/quill_articles_service.dart';
+import 'package:code_munnity/models/article.dart';
 import 'package:flutter/material.dart';
 import 'package:quill_delta/quill_delta.dart';
 import 'package:zefyr/zefyr.dart';
 
-class CollectionScreen extends StatefulWidget {
-  CollectionScreen({Key key}) : super(key: key);
+class EditWidget extends StatefulWidget {
+  final Article article;
+  EditWidget({Key key, this.article}) : super(key: key);
 
   @override
-  _CollectionScreenState createState() => _CollectionScreenState();
+  _EditWidgetState createState() => _EditWidgetState();
 }
 
-class _CollectionScreenState extends State<CollectionScreen> {
-  //This allows to control the editor and the document
-  
-  QuillArticlesService _quillService = new QuillArticlesService();
-  QuillArticle qa = new QuillArticle();
+class _EditWidgetState extends State<EditWidget> {
+
   ZefyrController _controller;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -32,9 +27,15 @@ class _CollectionScreenState extends State<CollectionScreen> {
     _controller = ZefyrController(document);
     _focusNode = FocusNode();
   }
+  
+
 
   @override
   Widget build(BuildContext context) {
+
+    
+  
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -42,17 +43,12 @@ class _CollectionScreenState extends State<CollectionScreen> {
         actions: <Widget>[
           Builder(builder: (context)=>IconButton(
             icon: Icon(Icons.save),
-            onPressed: ()=>saveDocument(context),
+            onPressed: ()=>_saveDocument(context),
           )),
           Builder(builder: (context)=>IconButton(
             icon: Icon(Icons.remove_red_eye),
             onPressed: (){
-              Navigator.push(
-                context, 
-                MaterialPageRoute(builder: 
-                (context)=>QuillArticlePage(
-                  idQuill:"KA4bgDNXdZ2w7gOPssbL"
-                )));
+              
             },
           ))
         ]
@@ -72,29 +68,15 @@ class _CollectionScreenState extends State<CollectionScreen> {
     // For simplicity we hardcode a simple document with one line of text
     // saying "Zefyr Quick Start".
     // (Note that delta must always end with newline.)
-    final Delta delta = Delta()..insert("Zefyr Quick Start\n");
+    final Delta delta = Delta()..insert("Escriba el contenido de su post aqui...\n");
     return NotusDocument.fromDelta(delta);
   }
   
-  void saveDocument(BuildContext context) async {
-    // Notus documents can be easily serialized to JSON by passing to
-    // `jsonEncode` directly
+  void _saveDocument(BuildContext context) {
+    
     final contents = jsonEncode(_controller.document);
-    qa.content = contents;
-    //qa.title = "";
-    await _quillService.createQuillArticle(qa).then(
-      (value) {
-        print(value.toJson());
-        _scaffoldKey.currentState.showSnackBar(
-          SnackBar(
-            content: Text("${value.title}\n${value.text}"),
-          )
-        );
-      }
-    );
+    widget.article.content = contents;
+    print(widget.article.content);
     
   }
-
-  
-
 }

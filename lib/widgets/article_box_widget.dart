@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class ArticleBoxWidget extends StatelessWidget {
   final String title;
   final Author author;
-  final String content;
+  final String abstract;
   final Function press;
   final int readers;
   final int stars;
@@ -16,7 +16,7 @@ class ArticleBoxWidget extends StatelessWidget {
       Key key,
       this.title, 
       this.author,
-      this.content,
+      this.abstract,
       this.press,
       this.readers,
       this.stars
@@ -81,13 +81,13 @@ class ArticleBoxWidget extends StatelessWidget {
                            child: Align(
                            alignment: Alignment.topLeft,
                            child: RichText(
-                                 maxLines: 7,
+                                 maxLines: 4,
                                  text: TextSpan(
                                    style: Theme.of(context)
                                    .textTheme
                                    .headline6
                                    .copyWith(fontSize: 15),
-                                   text: content
+                                   text: abstract
                                  ),  
                                overflow: TextOverflow.ellipsis,
                                ),

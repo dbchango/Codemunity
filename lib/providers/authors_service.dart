@@ -4,13 +4,13 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
 
-class ArticleService{
+class AuthorsService{
   String _urlRoot = fireStoreURL+"authors";
 
-  ArticleService();
+  AuthorsService();
 
   Future<Authors> _requestList(String url) async {
-    print(url);
+
     try{
       final resp = await http.get(url);
       if(resp.body.isEmpty) return null;

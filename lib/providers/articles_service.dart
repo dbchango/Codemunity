@@ -14,24 +14,8 @@ class ArticleService{
   Map<String, String> _headers = {"Content-Type": "application/json"};
   ArticleService();
 
-  Future<String> _uploadImg(File image) async {
-    final url = Uri.parse(cloudinaryURL);
-    final mimeType = mime(image.path).split("/"); 
-    final imageUploadReq = http.MultipartRequest('POST', url);
-    final file = await http.MultipartFile.fromPath("file", image.path,
-                        contentType: MediaType(mimeType[0], mimeType[1]));
-    imageUploadReq.files.add(file);
-    final imageResponse = await imageUploadReq.send();
-    final resp = await http.Response.fromStream(imageResponse);
-    if ( resp.statusCode != 200 ){
-      print('Error'+ resp.body);
-      return null;
-    }
-    final decodedData = json.decode(resp.body);
-    return decodedData['secure_url'];
-  }
 
-  Future<Message> _postarticle(Article article) async {
+  Future<Message> _postArticle(Article article) async {
     final resp = await http.post(_urlRoot, headers: _headers, body: articleToJson(article));
     if(resp.body.isEmpty) return null;
     final decodedData = json.decode(resp.body);
@@ -78,10 +62,8 @@ class ArticleService{
   }
 
   Future<Message> creatArticle(Article article) async {
-    return await _postarticle(article);
+    return await _postArticle(article);
   }
 
-  Future<String> uploadImg(File img){
-    return _uploadImg(img);
-  }
+  
 }

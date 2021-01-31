@@ -14,7 +14,7 @@ class SupporPage extends StatefulWidget {
 class _SupporPageState extends State<SupporPage> {
   SupportMessage _supportMessage = new SupportMessage();
   SupportService _service = new SupportService();
-
+  bool onSaving = false;
   final formKey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -27,6 +27,7 @@ class _SupporPageState extends State<SupporPage> {
 
      _size = MediaQuery.of(context).size.width;
     return Scaffold(
+      key: scaffoldKey,
       appBar: AppBar(
           centerTitle: true,
           title: Text('Soporte'),
@@ -67,6 +68,11 @@ class _SupporPageState extends State<SupporPage> {
                   _supportMessage.title = value;
                 });
               },
+              validator: (value) {
+            if (value.length < 5) return "Debe ingresar un titulo con al menos 5 caracteres";
+            return null; 
+            
+          },
             );
   }
 
@@ -83,6 +89,11 @@ class _SupporPageState extends State<SupporPage> {
               _supportMessage.text = value;
             });
           },
+          validator: (value) {
+            if (value.length < 10) return "El mensaje debe tener por lo menos 10 caracteres.";
+            return null; 
+            
+          },
         );
   }
    
@@ -95,11 +106,13 @@ class _SupporPageState extends State<SupporPage> {
                 children: [
                   Container(
                     width: _size*.7,
-                    child: TextButton(onPressed: _submitForm, child: Container(
-                      decoration: BoxDecoration(
-                      color: Colors.amber,
-                      borderRadius: BorderRadius.circular(5)
-                    ),
+                    child: TextButton(
+                      onPressed: onSaving == false? _submitForm: null, 
+                      child: Container(
+                        decoration: BoxDecoration(
+                        color: Colors.amber,
+                        borderRadius: BorderRadius.circular(5)
+                      ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -173,27 +186,47 @@ class _SupporPageState extends State<SupporPage> {
       }
     });
   }
-
+  /// This function post the message to de database
   _submitForm() async {
     if( !formKey.currentState.validate() ) return;
-
+    setState(() {
+      onSaving = true;
+    });
     formKey.currentState.save();
-    print(_supportMessage);
     if (_img != null) {
       _supportMessage.screenshot = await _service.uploadImage(_img);
     }
 
-    _service.post(_supportMessage).then((value){
-      scaffoldKey.currentState.showSnackBar(
-          SnackBar(content: Text("No enviado")),
-        );
-     if (value != null) {
+    await _service.post(_supportMessage).then((value){
+      
+      if(value!=null){
         formKey.currentState.reset();
         scaffoldKey.currentState.showSnackBar(
-          SnackBar(content: Text(value.text)),
+          SnackBar(
+            content: Text("${value.title}\n${value.text}"),
+            action:SnackBarAction(
+            label: 'Regresar a inicio', 
+            onPressed: (){
+              print('Ok lets return to home');
+              Navigator.of(context).pop();
+            }
+          ),
+          )
         );
       }
+      setState(() {
+        onSaving = false;
+      });
     });
 
+  }
+
+  SnackBarAction _actionSnackbar(bool flag){
+    return flag == true ? SnackBarAction(
+      label: 'Return to home', 
+      onPressed: (){
+        print('Ok lets return to home');
+      }
+    ):null;
   }
 }

@@ -1,4 +1,5 @@
 import 'package:code_munnity/models/author.dart';
+import 'package:code_munnity/models/category.dart';
 import 'package:code_munnity/utils/label.dart';
 import  'dart:convert';
 
@@ -10,13 +11,16 @@ class Article{
   String title;
   Date date;
   References references;
+  String idcategory;
   String idauthor;
+  String abstract;
   Labels labels;
   String content;
   Author author;
   int readers;
   int stars;
   String imgurl;
+  Category category;
 
   Article({
     this.id,
@@ -29,7 +33,10 @@ class Article{
     this.stars,
     this.date,
     this.references,
-    this.imgurl
+    this.imgurl,
+    this.idcategory,
+    this.category,
+    this.abstract
   });
 
   factory Article.fromJson(Map<String, dynamic> json) => Article(
@@ -39,11 +46,14 @@ class Article{
       idauthor : json['idauthor'],
       author : Author.fromJsonMap(json['author']),
       content : json['content'],
+      abstract : json['abstract'],
       stars : json['stars'],
       readers : json['readers'],
       references: References.fromJsonList(json['references']),
       date: Date.fromJson(json["date"]),
-      imgurl: json['imgurl']
+      imgurl: json['imgurl'],
+      idcategory: json['idcategory'],
+      category:Category.fromJsonMap(json['category'])
   );
 
   Map<String, dynamic> toJson() => {
@@ -55,9 +65,11 @@ class Article{
     "author": author,
     "readers": readers,
     "stars": stars, 
-    "references": references,
+    "references": references.toJson(),
     "imgurl" : imgurl,
-    "date" : date
+    "date" : date,
+    "idcategory" :idcategory,
+    "abstract" : abstract
   };
 }
 
@@ -67,6 +79,7 @@ class Reference{
   Reference.fromJsonMap(String json){
     reference = json;
   }
+  
 }
 
 class References{
@@ -79,9 +92,14 @@ class References{
     }
   }
 
-  getReferences(){
-    return references;
+  List<String> toJson(){
+    List<String> list = new List();
+    references.forEach((element) {
+      list.add(element.reference);
+    });
   }
+
+  
 }
 
 class Articles{

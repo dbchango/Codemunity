@@ -2,7 +2,6 @@ import 'package:code_munnity/models/article.dart';
 import 'package:code_munnity/providers/articles_service.dart';
 import 'package:code_munnity/widgets/area_btn_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class SearcScreen extends StatefulWidget {
   SearcScreen({Key key}) : super(key: key);

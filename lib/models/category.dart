@@ -13,3 +13,15 @@ class Category{
     }
   }
 }
+
+class Categories{
+  List<Category> items = List();
+  Categories();
+  
+  Categories.fromJsonList(List<dynamic> jsonList){
+    for(var item in jsonList){
+      final ctg = Category.fromJsonMap(item);
+      items.add(ctg);
+    }
+  }
+}

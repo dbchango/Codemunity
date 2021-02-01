@@ -8,6 +8,8 @@ import 'package:code_munnity/screens/edit_widget.dart';
 import 'package:code_munnity/theme/constants.dart';
 import 'package:code_munnity/utils/label.dart';
 import 'package:code_munnity/widgets/add_labels_widget.dart';
+import 'package:code_munnity/widgets/label_widget.dart';
+import 'package:code_munnity/widgets/select_category_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -22,9 +24,11 @@ class WriteArticleScreen extends StatefulWidget {
 }
 
 class _WriteArticleScreenState extends State<WriteArticleScreen> {
+  bool _buttonModalFlag = false;
   ZefyrController _editorController;
   FocusNode _editorFocusNode;
   Article _article;
+  List<Widget> elements = new List<Widget>();
   static List<Widget> _references = <Widget>[];
   static List<String> _referencesNames = <String>[];
   final formKey = GlobalKey<FormState>();
@@ -65,6 +69,7 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
 
   /// This function returns the form 
   Widget _getFormContent(){
+    final _size = MediaQuery.of(context).size;
     return ListView(
       children: <Widget>[
         Padding(
@@ -77,6 +82,7 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
         ),
         _getTitleInput(),
         _getAbstractInput(),
+        _getLabelsWidgets(),
         _getReferencesBox(),
         _getImageContainer(),
         _getSaveButton(),
@@ -102,20 +108,66 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
                 return AddLabelsWidget(article: _article,);
               },
 
-            );
+            ).then((value) {
+              _getLabels();
+              print(_article.toJson());
+            });
           }, 
           child: Container(
           child: Row(
             children: <Widget>[
               Icon(Icons.description_outlined),
               Text("Add labels")
+              
             ],
           ),
           )
         ),
-        AddLabelsWidget(article: _article,)
+        TextButton(
+          onPressed: (){
+            showModalBottomSheet(
+              context: context,
+              builder: (context) {
+                return SelectCategoryWidget(article: _article,);
+              },
+
+            ).then((value) {
+              print("Modal cerrado");
+              print(_article.toJson());
+            });
+          }, 
+          child: Container(
+          child: Row(
+            children: <Widget>[
+              Icon(Icons.description_outlined),
+              Text("Seleccionar categoria")
+            ],
+          ),
+          )
+        ),
+        
       ],
     );
+  }
+
+  Widget _getLabelsWidgets(){
+    return Container(
+      padding: colElementsPadding(),
+      child: Row(
+        children: elements,
+      )
+    );
+  }
+
+  _getLabels(){
+    setState(() {
+      elements.clear();
+      _article.labels.items.forEach((element) { 
+      elements.add(
+        LabelWidget(text: element.name,)
+      );
+    });
+    });
   }
 
   /// This function returns reference box content
@@ -236,6 +288,10 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical:8.0),
             child: TextFormField(
+              onChanged: (value) {
+                print(value);
+                _article.references.references[arrayLength].reference = value;
+              },
               decoration: InputDecoration(        
                 border: OutlineInputBorder(),
                 labelText: _article.references.references[arrayLength].reference,
@@ -342,12 +398,16 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
 
   /// Function that POST the article
   _onSave() {
-    if( !formKey.currentState.validate() ) return;
-    formKey.currentState.save();
-    print(_article.title);
-    print(_article.abstract);
-    print(_article.content);
-
+    _getLabels();
+    print(_article.toJson());
+    //if( !formKey.currentState.validate() ) return;
+    //formKey.currentState.save();
+    //print(_article.title);
+    //print(_article.abstract);
+    //print(_article.content);
+  _article.references.references.forEach((element) {
+    print(element.reference);
+  });
     /*
     if(!_formKey.currentState.validate())return;
     _formKey.currentState.save();

@@ -1,8 +1,8 @@
 import 'package:code_munnity/models/article.dart';
 import 'package:code_munnity/theme/constants.dart';
 import 'package:code_munnity/utils/label.dart';
-import 'package:code_munnity/widgets/label_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:random_color/random_color.dart';
 
 class AddLabelsWidget extends StatefulWidget {
   final Article article;
@@ -17,14 +17,11 @@ class AddLabelsWidget extends StatefulWidget {
 
 class _AddLabelsWidgetState extends State<AddLabelsWidget> {
   static List<Widget> _labelsWidgets = <Widget>[
-    Container(
-        child: LabelWidget(text:"Test label")
-      ),
+    
   ];
   String labelText = "";
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
   @override
@@ -81,19 +78,58 @@ class _AddLabelsWidgetState extends State<AddLabelsWidget> {
 
   _addLabel(String lblName){
     print(lblName);
-      print(_labelsWidgets.length);
+      print(widget.article.labels.items.length);
       final lengthLabels = widget.article.labels.items.length; 
       widget.article.labels.items.add(Label(name:lblName));
     setState(() {
-      
       _labelsWidgets.add(
         Container(
-          child: LabelWidget(text:widget.article.labels.items[lengthLabels].name)
+          child: Container(
+          decoration: BoxDecoration(
+          
+          borderRadius: BorderRadius.circular(25),
+          border: Border.all(
+            width: 0.5
+          ),
+          color: RandomColor().randomColor(colorHue: ColorHue.blue, colorBrightness: ColorBrightness.light)
+          ),
+          child: Row(
+            children: [
+              Padding(
+                padding: EdgeInsets.all(10),
+                child: Text(widget.article.labels.items[lengthLabels].name),
+              ),
+              
+              IconButton(
+                icon: Icon(Icons.delete_forever), 
+                onPressed: ()=>{
+                  deleteLabel(lblName)
+                }
+              )
+            ],
+          ),
+        ) 
+          
+          /*LabelWidget(
+            text:widget.article.labels.items[lengthLabels].name,
+            delete: ()=>print("Delete"),
+          ),*/
         )
       );
       
     });
   }
   
+  deleteLabel(String name){
+    
+    var index = widget.article.labels.items.indexWhere((element) => element.name == name);
+    print(index);
+    setState(() {
+      _labelsWidgets.removeAt(index);
+      widget.article.labels.items.removeAt(index);
+    });
+  }
+
 }
+
 

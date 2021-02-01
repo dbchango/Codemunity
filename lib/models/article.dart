@@ -97,6 +97,7 @@ class References{
     references.forEach((element) {
       list.add(element.reference);
     });
+    return list;
   }
 
   

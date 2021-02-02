@@ -2,10 +2,13 @@ import 'package:code_munnity/models/author.dart';
 import 'package:code_munnity/pages/maps_page.dart';
 import 'package:code_munnity/pages/profile_page.dart';
 import 'package:code_munnity/pages/support_PAGE.dart';
+import 'package:code_munnity/providers/authors_service.dart';
 import 'package:code_munnity/screens/collection_screen.dart';
 import 'package:code_munnity/screens/home_screen.dart';
 import 'package:code_munnity/screens/search_screen.dart';
 import 'package:code_munnity/screens/write_article_screen.dart';
+import 'package:code_munnity/utils/preferences.dart';
+import 'package:code_munnity/utils/utils.dart';
 import 'package:flutter/material.dart';
 
 
@@ -19,6 +22,7 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
   final PageStorageBucket _bucket = PageStorageBucket();
+  AuthorsService _authorsService;
   
   static List<Widget> _pages = <Widget>[
     HomeScreen(
@@ -47,15 +51,15 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
+    
   }
 
   @override
   Widget build(BuildContext context) {
-    Author test = new Author(
-      name: "Mayuko", 
-      mail: "mayuko@mail.com",
-      avatarimgurl: "https://yt3.ggpht.com/ytc/AAUvwnivjbUJ86-ZYW6puGnhv0Rey-osg2TL00CF-sEXXw=s900-c-k-c0x00ffffff-no-rj"
-      );
+    
+
+      
+
     return Scaffold(
         drawer: getdrawer(test),
         appBar: AppBar(

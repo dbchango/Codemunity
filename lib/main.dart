@@ -1,17 +1,24 @@
 import 'package:code_munnity/pages/login_page.dart';
 import 'package:code_munnity/pages/register_page.dart';
 import 'package:code_munnity/pages/support_page.dart';
+import 'package:code_munnity/utils/preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:code_munnity/pages/main_page.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Preferences().init();
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  final prefs = new Preferences();
+  
+   
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    
     return MaterialApp(
       title: 'Flutter Demo',
       themeMode: ThemeMode.light,

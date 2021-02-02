@@ -7,6 +7,7 @@ import 'package:code_munnity/screens/collection_screen.dart';
 import 'package:code_munnity/screens/edit_widget.dart';
 import 'package:code_munnity/theme/constants.dart';
 import 'package:code_munnity/utils/label.dart';
+import 'package:code_munnity/utils/utils.dart';
 import 'package:code_munnity/widgets/add_labels_widget.dart';
 import 'package:code_munnity/widgets/label_widget.dart';
 import 'package:code_munnity/widgets/select_category_widget.dart';
@@ -44,8 +45,7 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
     super.initState();
     _article = new Article();
     _article.labels = new Labels();
-    _article.idauthor = 'skdJALV391eE5p1EVItb';
-    _article.idcategory = 'e1fCPgEuHNB00w3ktHnL';
+    _article.idauthor = test.id;
     _article.references = new References();
     final document = _loadDocument();
     _editorController = ZefyrController(document);

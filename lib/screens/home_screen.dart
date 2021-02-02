@@ -2,6 +2,7 @@
 import 'package:code_munnity/models/article.dart';
 import 'package:code_munnity/pages/article_page.dart';
 import 'package:code_munnity/providers/articles_service.dart';
+import 'package:code_munnity/utils/preferences.dart';
 import 'package:code_munnity/widgets/article_box_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -13,6 +14,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final _prefs = Preferences();
   ArticleService _service;
   Articles _list;
   @override
@@ -20,6 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _service = new ArticleService();
     _loadArticles();
+    
   }
 
   @override
@@ -44,6 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
   
 
   _loadArticles() {
+
     _service.getArticles().then((value) {
       setState(() {
         _list = value;

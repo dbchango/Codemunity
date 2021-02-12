@@ -18,15 +18,14 @@ class _SelectCategoryWidgetState extends State<SelectCategoryWidget> {
   List<bool> _selectionFlags;
   CategoriesService _ctgsService;
   Categories _categories;
-  String _selection;
+  //String _selection;
   bool _buttonModalFlag;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     
     setState(() {
-      _selection ="";
+      //_selection ="";
     _ctgsService = new CategoriesService();
     _categories = new Categories();
     _getCategories();
@@ -37,7 +36,7 @@ class _SelectCategoryWidgetState extends State<SelectCategoryWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    //final size = MediaQuery.of(context).size;
     
     return Container(
        child: _categories == null? CircularProgressIndicator():
@@ -105,15 +104,16 @@ class _SelectCategoryWidgetState extends State<SelectCategoryWidget> {
   _getCategories() async {
     await _ctgsService.getCategories().then((value){
       _categories = value;
-       setState(() {
+       if(mounted){
+         setState(() {
          _selectionFlags = List(_categories.items.length);
          _buttonModalFlag = true;
        });
+       }
     });
   }
 
   _activateButton(int activeButton){
-    
     setState(() {
       for(int i=0; i<_selectionFlags.length;i++){
         _selectionFlags[i] = false;

@@ -16,7 +16,6 @@ class EditWidget extends StatefulWidget {
 class _EditWidgetState extends State<EditWidget> {
 
   ZefyrController _controller;
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   FocusNode _focusNode;
 

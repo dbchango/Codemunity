@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:code_munnity/models/author.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Preferences{
@@ -38,8 +38,6 @@ class Preferences{
     return _prefs.getString("gauthor") ?? "";
   }
 
-  set gauthor(String value){
-    _prefs.setString("gauthor", json.encode(value));
-  }
+
 
 }

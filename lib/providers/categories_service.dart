@@ -1,18 +1,13 @@
-import 'dart:io';
 
-import 'package:code_munnity/models/article.dart';
 import 'package:code_munnity/models/category.dart';
-import 'package:code_munnity/models/message_model.dart';
 import 'package:code_munnity/utils/routes.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
-import 'package:http_parser/http_parser.dart';
-import 'package:mime_type/mime_type.dart';
 
 class CategoriesService{
   String _urlRoot = fireStoreURL+"categories";
-  Map<String, String> _headers = {"Content-Type": "application/json"};
+  //Map<String, String> _headers = {"Content-Type": "application/json"};
   CategoriesService();
 
 

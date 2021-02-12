@@ -1,9 +1,5 @@
 import 'dart:io';
-
 import 'package:code_munnity/models/article.dart';
-import 'package:code_munnity/providers/articles_service.dart';
-import 'package:code_munnity/providers/storage_service.dart';
-import 'package:code_munnity/screens/collection_screen.dart';
 import 'package:code_munnity/screens/edit_widget.dart';
 import 'package:code_munnity/theme/constants.dart';
 import 'package:code_munnity/utils/label.dart';
@@ -14,7 +10,6 @@ import 'package:code_munnity/widgets/select_category_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:quill_delta/quill_delta.dart';
 import 'package:zefyr/zefyr.dart';
 
 class WriteArticleScreen extends StatefulWidget {
@@ -25,18 +20,18 @@ class WriteArticleScreen extends StatefulWidget {
 }
 
 class _WriteArticleScreenState extends State<WriteArticleScreen> {
-  bool _buttonModalFlag = false;
+  /*bool _buttonModalFlag = false;
   ZefyrController _editorController;
   FocusNode _editorFocusNode;
-  Article _article;
-  List<Widget> elements = new List<Widget>();
-  static List<Widget> _references = <Widget>[];
   static List<String> _referencesNames = <String>[];
-  final formKey = GlobalKey<FormState>();
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
   ArticleService _service = new ArticleService();
   StorageService _storageService = StorageService();
-  var _showEditor = false;
+  var _showEditor = false;*/
+  Article _article;
+  final formKey = GlobalKey<FormState>();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  List<Widget> elements = new List<Widget>();
+  static List<Widget> _references = <Widget>[];
   var _size;
   File _img ;
   final picker = ImagePicker();
@@ -47,9 +42,9 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
     _article.labels = new Labels();
     _article.idauthor = test.id;
     _article.references = new References();
-    final document = _loadDocument();
-    _editorController = ZefyrController(document);
-    _editorFocusNode = FocusNode();
+    //final document = _loadDocument();
+    //_editorController = ZefyrController(document);
+    //_editorFocusNode = FocusNode();
   }
 
   @override
@@ -69,7 +64,7 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
 
   /// This function returns the form 
   Widget _getFormContent(){
-    final _size = MediaQuery.of(context).size;
+    //final _size = MediaQuery.of(context).size;
     return ListView(
       children: <Widget>[
         Padding(
@@ -458,10 +453,10 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
   }
 
   /// This function return the document for the Zefyr text editor 
-  NotusDocument _loadDocument(){
+  /*NotusDocument _loadDocument(){
     final Delta delta = Delta()..insert("Contenido ... \n");
     return NotusDocument.fromDelta(delta); 
-  }
+  }*/
 
   
 

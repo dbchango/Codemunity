@@ -4,7 +4,6 @@ import 'package:code_munnity/theme/constants.dart';
 import 'package:code_munnity/widgets/article_content_widget.dart';
 import 'package:code_munnity/widgets/author_box_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:zefyr/zefyr.dart';
 

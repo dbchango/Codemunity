@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:code_munnity/models/quill_article.dart';
-import 'package:code_munnity/pages/article_page.dart';
 import 'package:code_munnity/pages/quill_article_page.dart';
 import 'package:code_munnity/providers/quill_articles_service.dart';
 import 'package:flutter/material.dart';
@@ -35,35 +34,34 @@ class _CollectionScreenState extends State<CollectionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        title: Text("Editor page"),
-        actions: <Widget>[
-          Builder(builder: (context)=>IconButton(
-            icon: Icon(Icons.save),
-            onPressed: ()=>saveDocument(context),
-          )),
-          Builder(builder: (context)=>IconButton(
-            icon: Icon(Icons.remove_red_eye),
-            onPressed: (){
-              Navigator.push(
-                context, 
-                MaterialPageRoute(builder: 
-                (context)=>QuillArticlePage(
-                  idQuill:"KA4bgDNXdZ2w7gOPssbL"
-                )));
-            },
-          ))
-        ]
-      ),
-       body: ZefyrScaffold(
-         child: ZefyrEditor(
-           padding: EdgeInsets.all(16),
-           controller: _controller, 
-           focusNode: _focusNode
-          ),
+    return DefaultTabController(
+      length: 2, 
+      child: Scaffold(
+        key: _scaffoldKey,
+        appBar: AppBar(
+          bottom: TabBar(
+            tabs: [
+              Tab(text: "REST", icon:Icon(Icons.cloud_circle_rounded)),
+              Tab(text: "SDK", icon:Icon(Icons.book_online))
+            ],
         ),
+        
+        ),
+        body: TabBarView(
+          children: [
+            ZefyrScaffold(
+            child: ZefyrEditor(
+              padding: EdgeInsets.all(16),
+              controller: _controller, 
+              focusNode: _focusNode
+              ),
+            ),
+            QuillArticlePage(
+                  idQuill:"KA4bgDNXdZ2w7gOPssbL"
+                )
+          ],
+        ),
+      )
     );
   }
 

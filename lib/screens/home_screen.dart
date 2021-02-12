@@ -1,8 +1,6 @@
 
 import 'package:code_munnity/models/article.dart';
-import 'package:code_munnity/pages/article_page.dart';
 import 'package:code_munnity/providers/articles_service.dart';
-import 'package:code_munnity/utils/preferences.dart';
 import 'package:code_munnity/widgets/article_box_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +12,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final _prefs = Preferences();
   ArticleService _service;
   Articles _list;
   @override
@@ -37,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
                  padding: const EdgeInsets.symmetric(horizontal: 5),
                  child: ListView(
                    children: _list.items.map((e) {
-                     return _getArticleItem(e);
+                     return ArticleBoxWidget(article: e);
                    }).toList(),
                  )
                 ),
@@ -55,26 +52,5 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  Widget _getArticleItem(Article article){
-    return GestureDetector(
-      onTap: (){
-        Navigator.push(
-          context, 
-          MaterialPageRoute(builder: 
-          (context)=>ArticlePage(
-            idArticle:article.id
-          )));
-      },
-      child: ArticleBoxWidget(
-        title: article.title,
-        author: article.author,
-        abstract: article.abstract,
-        stars: article.stars,
-        readers: article.readers,
-      )
-    ,);
-      
-    
-  }
 
 }

@@ -60,7 +60,7 @@ class Article{
     "id": id, 
     "title": title, 
     "idauthor": idauthor,
-    "labels": labels, 
+    "labels": labels.items, 
     "content": content, 
     "author": author,
     "readers": readers,

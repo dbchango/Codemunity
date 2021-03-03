@@ -1,5 +1,4 @@
 import 'package:code_munnity/models/article.dart';
-import 'package:code_munnity/models/author.dart';
 import 'package:code_munnity/pages/article_page.dart';
 import 'package:code_munnity/widgets/author_box_widget.dart';
 import 'package:flutter/material.dart';

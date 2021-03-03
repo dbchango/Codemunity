@@ -1,6 +1,4 @@
-import 'package:code_munnity/pages/login_page.dart';
-import 'package:code_munnity/pages/register_page.dart';
-import 'package:code_munnity/pages/support_page.dart';
+
 import 'package:code_munnity/providers/content_provider.dart';
 import 'package:code_munnity/utils/preferences.dart';
 import 'package:firebase_core/firebase_core.dart';

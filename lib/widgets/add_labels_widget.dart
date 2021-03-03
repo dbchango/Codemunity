@@ -16,13 +16,12 @@ class AddLabelsWidget extends StatefulWidget {
 }
 
 class _AddLabelsWidgetState extends State<AddLabelsWidget> {
-  static List<Widget> _labelsWidgets = <Widget>[
-    
-  ];
+  static List<Widget> _labelsWidgets;
   String labelText = "";
   @override
   void initState() {
     super.initState();
+    _labelsWidgets = new List<Widget>();
   }
   @override
   Widget build(BuildContext context) {
@@ -77,8 +76,6 @@ class _AddLabelsWidgetState extends State<AddLabelsWidget> {
   }
 
   _addLabel(String lblName){
-    print(lblName);
-      print(widget.article.labels.items.length);
       final lengthLabels = widget.article.labels.items.length; 
       widget.article.labels.items.add(Label(name:lblName));
     setState(() {
@@ -109,11 +106,6 @@ class _AddLabelsWidgetState extends State<AddLabelsWidget> {
             ],
           ),
         ) 
-          
-          /*LabelWidget(
-            text:widget.article.labels.items[lengthLabels].name,
-            delete: ()=>print("Delete"),
-          ),*/
         )
       );
       
@@ -127,6 +119,42 @@ class _AddLabelsWidgetState extends State<AddLabelsWidget> {
     setState(() {
       _labelsWidgets.removeAt(index);
       widget.article.labels.items.removeAt(index);
+    });
+  }
+
+  loadLabel(){
+    widget.article.labels.items.forEach((element) { 
+      setState(() {
+        _labelsWidgets.add(
+        Container(
+          child: Container(
+          decoration: BoxDecoration(
+          
+          borderRadius: BorderRadius.circular(25),
+          border: Border.all(
+            width: 0.5
+          ),
+          color: RandomColor().randomColor(colorHue: ColorHue.blue, colorBrightness: ColorBrightness.light)
+          ),
+          child: Row(
+            children: [
+              Padding(
+                padding: EdgeInsets.all(10),
+                child: Text(element.name),
+              ),
+              
+              IconButton(
+                icon: Icon(Icons.delete_forever), 
+                onPressed: ()=>{
+                  deleteLabel(element.name)
+                }
+              )
+            ],
+          ),
+        ) 
+        )
+      );
+      });
     });
   }
 

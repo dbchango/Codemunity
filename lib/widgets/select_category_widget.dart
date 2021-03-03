@@ -18,14 +18,12 @@ class _SelectCategoryWidgetState extends State<SelectCategoryWidget> {
   List<bool> _selectionFlags;
   CategoriesService _ctgsService;
   Categories _categories;
-  //String _selection;
   bool _buttonModalFlag;
   @override
   void initState() {
     super.initState();
     
     setState(() {
-      //_selection ="";
     _ctgsService = new CategoriesService();
     _categories = new Categories();
     _getCategories();

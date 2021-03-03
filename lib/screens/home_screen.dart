@@ -30,25 +30,23 @@ class _HomeScreenState extends State<HomeScreen> {
     ? Center(child: Text("Loading articles...")): Container(
       
       child: Padding(
-                
-                 padding: const EdgeInsets.symmetric(horizontal: 5),
-                 child: ListView(
-                   children: _list.items.map((e) {
-                     return ArticleBoxWidget(article: e);
-                   }).toList(),
-                 )
-                ),
+        padding: const EdgeInsets.symmetric(horizontal: 5),
+        child: ListView(
+          children: _list.items.map((e) {
+            return ArticleBoxWidget(article: e);
+          }).toList(),
+        )
+        ),
     );
   }
 
-  
-
   _loadArticles() {
-
     _service.getArticles().then((value) {
-      setState(() {
-        _list = value;
-      });
+      if(mounted){
+        setState(() {
+          _list = value;
+        });
+      }
     });
   }
 

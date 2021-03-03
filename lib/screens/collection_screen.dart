@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:code_munnity/models/quill_article.dart';
-import 'package:code_munnity/pages/quill_article_page.dart';
 import 'package:code_munnity/providers/quill_articles_service.dart';
+import 'package:code_munnity/screens/articles_sdk_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:quill_delta/quill_delta.dart';
 import 'package:zefyr/zefyr.dart';
@@ -56,9 +56,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
               focusNode: _focusNode
               ),
             ),
-            QuillArticlePage(
-                  idQuill:"KA4bgDNXdZ2w7gOPssbL"
-                )
+            ArticlesSDKWidget()
           ],
         ),
       )

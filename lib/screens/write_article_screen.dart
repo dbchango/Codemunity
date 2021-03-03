@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'package:code_munnity/models/article.dart';
+import 'package:code_munnity/providers/articles_service.dart';
+import 'package:code_munnity/providers/storage_service.dart';
 import 'package:code_munnity/screens/edit_widget.dart';
 import 'package:code_munnity/theme/constants.dart';
 import 'package:code_munnity/utils/label.dart';
@@ -20,31 +22,26 @@ class WriteArticleScreen extends StatefulWidget {
 }
 
 class _WriteArticleScreenState extends State<WriteArticleScreen> {
-  /*bool _buttonModalFlag = false;
-  ZefyrController _editorController;
-  FocusNode _editorFocusNode;
-  static List<String> _referencesNames = <String>[];
-  ArticleService _service = new ArticleService();
-  StorageService _storageService = StorageService();
-  var _showEditor = false;*/
   Article _article;
   final formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  List<Widget> elements = new List<Widget>();
-  static List<Widget> _references = <Widget>[];
+  List<Widget> elements;
+  List<Widget> _references;
   var _size;
   File _img ;
   final picker = ImagePicker();
+  ArticleService _service = new ArticleService();
+  
+  StorageService _storageService = new StorageService();
   @override
   void initState() {
     super.initState();
+    elements = new List<Widget>();
+    _references = new List<Widget>();
     _article = new Article();
     _article.labels = new Labels();
     _article.idauthor = test.id;
     _article.references = new References();
-    //final document = _loadDocument();
-    //_editorController = ZefyrController(document);
-    //_editorFocusNode = FocusNode();
   }
 
   @override
@@ -66,22 +63,30 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
   Widget _getFormContent(){
     //final _size = MediaQuery.of(context).size;
     return ListView(
+      padding: topElementsPadding(),
       children: <Widget>[
-        Padding(
-          padding: topElementsPadding(),
-          child: Container(
-            child: Text("Nueva Publicación" ,
+        Text("Nueva Publicación" ,
             maxLines: 1,
-            style: titleStyles(),)
+            style: titleStyles(),
           ),
-        ),
+        
         _getTitleInput(),
         _getAbstractInput(),
         _getLabelsWidgets(),
         _getReferencesBox(),
         _getImageContainer(),
         _getSaveButton(),
-        
+        IconButton(
+          icon: Row(
+            children: <Widget>[
+              Icon(Icons.description_outlined),
+              Text("Escribir contenido")
+            ],
+          ), 
+          onPressed: (){
+            Navigator.push(context,  MaterialPageRoute(builder: (context)=> EditWidget(article: _article,)));
+          }
+        ),
         TextButton(
           onPressed: (){
             Navigator.push(context,  MaterialPageRoute(builder: (context)=> EditWidget(article: _article,)));
@@ -90,11 +95,12 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
           child: Row(
             children: <Widget>[
               Icon(Icons.description_outlined),
-              Text("Edit article")
+              Text("Escribir contenido")
             ],
           ),
           )
         ),
+        
         TextButton(
           onPressed: (){
             showModalBottomSheet(
@@ -168,12 +174,7 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
   /// This function returns reference box content
   Widget _getReferencesBox(){
     return Container(
-      decoration: BoxDecoration(
-        border: Border.all(
-          width: 1
-        ),
-        borderRadius: BorderRadius.circular(5)
-      ),
+      decoration: boxDecForm(context),
       child: Column(
         children: <Widget>[
           Padding(
@@ -236,12 +237,7 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
     return Padding(
       padding: colElementsPadding(),
       child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5),
-          border: Border.all(
-            width: 1.0
-          )
-        ),
+        decoration: boxDecForm(context),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -274,6 +270,7 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
 
   /// Function that add references spaces
   _onTapAddRef(){
+    print(articleToJson(_article));
     final arrayLength = _article.references.references.length;
       final String newTitle = "Referencia "+(arrayLength+1).toString(); 
       //_referencesNames.add(newTitle);
@@ -287,9 +284,11 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
                 print(value);
                 _article.references.references[arrayLength].reference = value;
               },
-              decoration: InputDecoration(        
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(   
+                prefixIcon: Icon(Icons.format_quote_rounded),
+                border: inputBorder(context),
                 labelText: _article.references.references[arrayLength].reference,
+                
                 alignLabelWithHint: true 
               ),
               onSaved: (newValue) {
@@ -337,15 +336,16 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
 
   /// This function return title input widget
   Widget _getTitleInput(){
-    
     return TextFormField(
       onChanged: (value) => _article.title = value,
       focusNode: new FocusNode(),
       decoration: InputDecoration(
-        //border: InputBorder.none,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20.0),
+          borderSide: BorderSide()
+        ),
         labelText: "Título",
-        //alignLabelWithHint: true,
-          
+        prefixIcon: Icon(Icons.text_fields)
       ),
       maxLength: 40,
       onSaved: (newValue) => _article.title = newValue,
@@ -365,7 +365,8 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
       onChanged: (value) => _article.abstract = value,
       focusNode: new FocusNode(),
       decoration: InputDecoration(
-        //border: InputBorder.none,
+        prefixIcon: Icon(Icons.text_format),
+        border: inputBorder(context),
         labelText: "Resúmen",
         //alignLabelWithHint: true,
           
@@ -392,23 +393,23 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
   }
 
   /// Function that POST the article
-  _onSave() {
+  _onSave()async {
     _getLabels();
     print(_article.toJson());
-    //if( !formKey.currentState.validate() ) return;
-    //formKey.currentState.save();
-    //print(_article.title);
-    //print(_article.abstract);
-    //print(_article.content);
+    if( !formKey.currentState.validate() ) return;
+    formKey.currentState.save();
+    print(_article.title);
+    print(_article.abstract);
+    print(_article.content);
   _article.references.references.forEach((element) {
     print(element.reference);
   });
-    /*
-    if(!_formKey.currentState.validate())return;
-    _formKey.currentState.save();
-    /*if (_img != null) {
+    
+    if(!formKey.currentState.validate())return;
+    formKey.currentState.save();
+    if (_img != null) {
       _article.imgurl = await _storageService.uploadImg(_img);
-    }*/
+    }
 
     print(_article.toJson());
     print(_article.title);
@@ -435,7 +436,7 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
         );
       }
     );
-    */
+    
 
   }
 
@@ -452,12 +453,6 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
     });
   }
 
-  /// This function return the document for the Zefyr text editor 
-  /*NotusDocument _loadDocument(){
-    final Delta delta = Delta()..insert("Contenido ... \n");
-    return NotusDocument.fromDelta(delta); 
-  }*/
 
-  
 
 }

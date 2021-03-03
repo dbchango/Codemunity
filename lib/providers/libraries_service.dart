@@ -1,15 +1,12 @@
-
-import 'package:code_munnity/models/libraries.dart';
+import 'dart:convert';
+import 'package:code_munnity/models/library.dart';
 import 'dart:async';
+import 'package:flutter/services.dart' show rootBundle;
 
-class ReportService {
+class LibrariesService {
   
-  
-  ReportService();
+  LibrariesService();
 
-  Future<Libraries> getAll(){
-    
-    
-    return null; 
-  }
+  Future<Libraries> getAll() async=> rootBundle.loadString("assets/data/data.json").then((value){return Libraries.fromJsonList(json.decode(value));});
+
 }

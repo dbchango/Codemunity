@@ -22,10 +22,11 @@ class _AddLabelsWidgetState extends State<AddLabelsWidget> {
   void initState() {
     super.initState();
     _labelsWidgets = new List<Widget>();
+    loadLabel();
   }
   @override
   Widget build(BuildContext context) {
-    
+    final maxElements = 4;
     final size = MediaQuery.of(context).size;
     return Container(
       decoration: BoxDecoration(
@@ -43,6 +44,7 @@ class _AddLabelsWidgetState extends State<AddLabelsWidget> {
             padding: colElementsPadding(),
 
             child: TextField(
+              maxLength: 20,
               onChanged: (value) => labelText=value,
               decoration: InputDecoration(
                 labelText: "Etiqueta"
@@ -51,7 +53,7 @@ class _AddLabelsWidgetState extends State<AddLabelsWidget> {
           ),
           Container(
             child: FlatButton(
-              onPressed: (){setState(() {
+              onPressed: widget.article.labels.items.length > maxElements?null: (){setState(() {
                 _addLabel(labelText);
               });}, 
               child: Row(
@@ -64,8 +66,9 @@ class _AddLabelsWidgetState extends State<AddLabelsWidget> {
           ),
           // This container will show the labels 
           Container(
-            
-            child: Row(
+            padding: EdgeInsets.symmetric(horizontal: 30),
+            child: Column(
+
               mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: _labelsWidgets,
                ),
@@ -81,6 +84,7 @@ class _AddLabelsWidgetState extends State<AddLabelsWidget> {
     setState(() {
       _labelsWidgets.add(
         Container(
+          padding: EdgeInsets.all(10),
           child: Container(
           decoration: BoxDecoration(
           
@@ -91,6 +95,7 @@ class _AddLabelsWidgetState extends State<AddLabelsWidget> {
           color: RandomColor().randomColor(colorHue: ColorHue.blue, colorBrightness: ColorBrightness.light)
           ),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Padding(
                 padding: EdgeInsets.all(10),
@@ -125,8 +130,10 @@ class _AddLabelsWidgetState extends State<AddLabelsWidget> {
   loadLabel(){
     widget.article.labels.items.forEach((element) { 
       setState(() {
+       
         _labelsWidgets.add(
         Container(
+          padding: EdgeInsets.all(10),
           child: Container(
           decoration: BoxDecoration(
           
@@ -137,6 +144,7 @@ class _AddLabelsWidgetState extends State<AddLabelsWidget> {
           color: RandomColor().randomColor(colorHue: ColorHue.blue, colorBrightness: ColorBrightness.light)
           ),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Padding(
                 padding: EdgeInsets.all(10),
@@ -157,6 +165,10 @@ class _AddLabelsWidgetState extends State<AddLabelsWidget> {
       });
     });
   }
+
+  
+
+
 
 }
 

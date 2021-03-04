@@ -7,6 +7,7 @@ import 'package:code_munnity/screens/collection_screen.dart';
 import 'package:code_munnity/screens/home_screen.dart';
 import 'package:code_munnity/screens/search_screen.dart';
 import 'package:code_munnity/screens/write_article_screen.dart';
+import 'package:code_munnity/theme/constants.dart';
 import 'package:code_munnity/utils/preferences.dart';
 import 'package:code_munnity/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -59,10 +60,7 @@ class _MainPageState extends State<MainPage> {
         drawer: getdrawer(test),
         appBar: AppBar(
           centerTitle: true,
-          title: Container(
-            height: 50,
-            child: Image.asset('assets/images/logo_white_letters.png', fit: BoxFit.cover,)
-            ),
+          title: getLogoImg(),
         ),
         body: PageStorage(bucket: _bucket, child: _pages[_selectedIndex],),
         bottomNavigationBar: BottomNavigationBar(

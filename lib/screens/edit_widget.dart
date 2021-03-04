@@ -44,12 +44,6 @@ class _EditWidgetState extends State<EditWidget> {
             icon: Icon(Icons.save),
             onPressed: ()=>_saveDocument(context),
           )),
-          Builder(builder: (context)=>IconButton(
-            icon: Icon(Icons.remove_red_eye),
-            onPressed: (){
-              
-            },
-          ))
         ]
       ),
        body: ZefyrScaffold(
@@ -64,11 +58,11 @@ class _EditWidgetState extends State<EditWidget> {
 
   ///Load the document to be edited in Zefyr 
   NotusDocument _loadDocument(){
-    // For simplicity we hardcode a simple document with one line of text
-    // saying "Zefyr Quick Start".
-    // (Note that delta must always end with newline.)
-    final Delta delta = Delta()..insert("Escriba el contenido de su post aqui...\n");
-    return NotusDocument.fromDelta(delta);
+    if(widget.article.content==null){
+      final Delta delta = Delta()..insert("Escriba el contenido de su post aqui...\n");
+      return NotusDocument.fromDelta(delta);
+    }
+    return NotusDocument.fromJson(jsonDecode(widget.article.content));
   }
   
   void _saveDocument(BuildContext context) {

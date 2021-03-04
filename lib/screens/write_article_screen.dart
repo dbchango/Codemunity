@@ -50,7 +50,6 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
     return Scaffold(
       key: _scaffoldKey,
       body: ZefyrScaffold(
-        
         child: Form(
           key: formKey,
           child: _getFormContent()
@@ -69,94 +68,123 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
             maxLines: 1,
             style: titleStyles(),
           ),
-        
         _getTitleInput(),
         _getAbstractInput(),
-        _getLabelsWidgets(),
         _getReferencesBox(),
         _getImageContainer(),
+        Container(
+          padding: EdgeInsets.all(25),
+          child: Container(
+            child: Column(
+              children: [
+                Row(children: [Text("Etiquetas: "), Icon(Icons.label)],),
+                _getLabelsWidgets(),
+              ],
+            ),
+          ),
+        ),
+        
+        _getAddLabelsButton(),
+        _getWriteButton(),
+        _getSelectCategory(),
         _getSaveButton(),
-        IconButton(
-          icon: Row(
-            children: <Widget>[
-              Icon(Icons.description_outlined),
-              Text("Escribir contenido")
-            ],
-          ), 
-          onPressed: (){
-            Navigator.push(context,  MaterialPageRoute(builder: (context)=> EditWidget(article: _article,)));
-          }
-        ),
-        TextButton(
-          onPressed: (){
-            Navigator.push(context,  MaterialPageRoute(builder: (context)=> EditWidget(article: _article,)));
-          }, 
-          child: Container(
-          child: Row(
-            children: <Widget>[
-              Icon(Icons.description_outlined),
-              Text("Escribir contenido")
-            ],
-          ),
-          )
-        ),
-        
-        TextButton(
-          onPressed: (){
-            showModalBottomSheet(
-              context: context,
-              builder: (context) {
-                return AddLabelsWidget(article: _article,);
-              },
-
-            ).then((value) {
-              _getLabels();
-              print(_article.toJson());
-            });
-          }, 
-          child: Container(
-          child: Row(
-            children: <Widget>[
-              Icon(Icons.description_outlined),
-              Text("Add labels")
-              
-            ],
-          ),
-          )
-        ),
-        TextButton(
-          onPressed: (){
-            showModalBottomSheet(
-              context: context,
-              builder: (context) {
-                return SelectCategoryWidget(article: _article,);
-              },
-
-            ).then((value) {
-              print("Modal cerrado");
-              print(_article.toJson());
-            });
-          }, 
-          child: Container(
-          child: Row(
-            children: <Widget>[
-              Icon(Icons.description_outlined),
-              Text("Seleccionar categoria")
-            ],
-          ),
-          )
-        ),
-        
       ],
     );
   }
 
+  
+
+  Widget _getAddLabelsButton(){
+    return MaterialButton(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0)
+      ),  
+      color: Colors.amber,
+      onPressed: (){
+          showModalBottomSheet(
+            context: context,
+            builder: (context) {
+              return AddLabelsWidget(article: _article,);
+            },
+          ).then((value) {
+            _getLabels();
+            print(_article.toJson());
+          });
+        }, 
+        child: Container(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text("Añadir etiqueta"),
+            Icon(Icons.label),
+          ],
+        ),
+      )
+    );
+  }
+
+  Widget _getSelectCategory(){
+    return MaterialButton(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0)
+        ),  
+        color: Colors.amber,
+        onPressed: (){
+          showModalBottomSheet(
+            context: context,
+            builder: (context) {
+              return SelectCategoryWidget(article: _article,);
+            },
+          ).then((value) {
+              print("Modal cerrado");
+              print(_article.toJson());
+            }
+          );
+        }, 
+        child: Container(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text("Seleccionar categoria"),
+              Icon(Icons.book),
+            ],
+          ),
+        )
+      );
+  }
+
+  Widget _getWriteButton(){
+    return MaterialButton(
+      color: Colors.amber,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0)
+      ),  
+      onPressed: (){
+            Navigator.push(context,  MaterialPageRoute(builder: (context)=> EditWidget(article: _article,)));
+      }, 
+      child: Container(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text("Escribir contenido"),
+          Icon(Icons.create),
+        ],
+      ),
+      )
+    );
+  }
+
+  
+
   Widget _getLabelsWidgets(){
     return Container(
-      padding: colElementsPadding(),
-      child: Row(
-        children: elements,
-      )
+        decoration: BoxDecoration(
+        ),
+        padding: colElementsPadding(),
+        child: Column(
+          
+          children: elements,
+        )
     );
   }
 
@@ -169,6 +197,30 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
       );
     });
     });
+  }
+
+  /// This function that return the save button widget
+  Widget _getSaveButton(){
+    return MaterialButton(
+      color: Theme.of(context).accentColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0)
+      ), 
+      onPressed: _onSave, 
+      child: Container(
+
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("Publicar"),
+            Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Icon(Icons.send),
+            ),  
+          ],
+        ),
+      )
+    );
   }
 
   /// This function returns reference box content
@@ -242,7 +294,7 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.all(5),
+              padding: EdgeInsets.all(25),
               child: _img!=null?Image.file(_img):Image.asset('assets/images/no-image.png'),
 
             ),
@@ -300,39 +352,7 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
       });
   }
 
-  /// This function that return the save button widget
-  Widget _getSaveButton(){
-    return Padding(
-      padding: const EdgeInsets.all(4.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: _size*.7,
-          
-            child: TextButton(onPressed: _onSave, child: Container(
-              decoration: BoxDecoration(
-              color: Colors.amber,
-              borderRadius: BorderRadius.circular(5)
-            ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("Publicar"),
-                  Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: Icon(Icons.send),
-                  ),
-                  
-                ],
-              ),
-            ))
-          ),
-          
-        ],
-      )
-    );
-  }
+  
 
   /// This function return title input widget
   Widget _getTitleInput(){

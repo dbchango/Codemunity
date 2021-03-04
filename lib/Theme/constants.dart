@@ -70,6 +70,22 @@ BoxDecoration boxDecForm(context){
 
 
 
+Widget getLogoImg(){
+  return Container(
+            height: 50,
+            child: Image.asset('assets/images/logo_white_letters.png', fit: BoxFit.cover,)
+            );
+}
 
 
+TextStyle getTitlesAccountScreen(){
+  return TextStyle(
+    fontSize: 15,
+    fontWeight: FontWeight.bold
+  );
+}
+
+SizedBox getSizedBox(){
+  return SizedBox(height: 20.0,);
+}
 

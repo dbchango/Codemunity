@@ -1,28 +1,28 @@
 import 'package:code_munnity/models/location.dart';
 
-class Library{
+class Institute{
   String name;
   Location location;
   
-  Library({
+  Institute({
     this.name, 
     this.location
   });
 
-  factory Library.fromJson(Map<String, dynamic> json) => Library(
+  factory Institute.fromJson(Map<String, dynamic> json) => Institute(
     name:json["name"],
     location: Location.fromJson(json)
   );
 
 }
 
-class Libraries{
-  List<Library> items = List();
-  Libraries();
-  Libraries.fromJsonList(List<dynamic> jsonList){
+class Institutes{
+  List<Institute> items = List();
+  Institutes();
+  Institutes.fromJsonList(List<dynamic> jsonList){
     if (jsonList == null) return;
     for (var item in jsonList) {
-      final lib = Library.fromJson(item);
+      final lib = Institute.fromJson(item);
       items.add(lib);
     }
   }

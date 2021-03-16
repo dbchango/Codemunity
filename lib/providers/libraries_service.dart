@@ -7,6 +7,6 @@ class LibrariesService {
   
   LibrariesService();
 
-  Future<Libraries> getAll() async=> rootBundle.loadString("assets/data/data.json").then((value){return Libraries.fromJsonList(json.decode(value));});
+  
 
 }

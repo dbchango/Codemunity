@@ -1,10 +1,13 @@
 
+
+import 'package:code_munnity/bloc/provider_bloc.dart';
+import 'package:code_munnity/pages/login_page.dart';
 import 'package:code_munnity/providers/content_provider.dart';
 import 'package:code_munnity/utils/preferences.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
-import 'package:code_munnity/pages/main_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,7 +15,9 @@ Future<void> main() async {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider<ContentProvider>(
       create: (_) => ContentProvider(),
-    )
+    ),
+ 
+    
   ], child: MyApp()));
 }
 
@@ -22,6 +27,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Future<FirebaseApp> _initialization = Firebase.initializeApp();
+    final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
     return ChangeNotifierProvider<ContentProvider>(
       create: (BuildContext context) => ContentProvider(),
       child: Consumer<ContentProvider>(builder: (context, provider, __){
@@ -41,10 +47,12 @@ class MyApp extends StatelessWidget {
             }
             
             if(snapshot.connectionState == ConnectionState.done){
-              return MainPage();
+              return LoginPage();
             }
             return Container(
-                  child: Center(child: CircularProgressIndicator())
+                  child: Center(
+                    child: CircularProgressIndicator()
+                  )
                 );
           },
         ),
@@ -67,5 +75,8 @@ class MyApp extends StatelessWidget {
       },)
     );
   }
+
+
+  
 }
 

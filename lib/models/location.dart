@@ -1,3 +1,5 @@
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 class Location{
   String longitud;
   String latitude;
@@ -16,6 +18,17 @@ class Location{
     "longitud" : longitud,
     "latitude" : latitude
   };
+
+  LatLng getGeo() {
+    if (double.tryParse(this.latitude) == null &&
+        double.tryParse(this.longitud) == null) {
+      return null;
+    }
+
+    double lat = double.parse(this.latitude);
+    double lng = double.parse(this.longitud);
+    return LatLng(lat, lng);
+  }
 
 }
 

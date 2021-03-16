@@ -35,7 +35,4 @@ class Preferences{
   get  gauthor{
     return _prefs.getString("gauthor") ?? "";
   }
-
-
-
 }

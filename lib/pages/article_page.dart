@@ -1,10 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:code_munnity/models/article.dart';
 import 'package:code_munnity/providers/articles_service.dart';
 import 'package:code_munnity/theme/constants.dart';
 import 'package:code_munnity/widgets/article_content_widget.dart';
 import 'package:code_munnity/widgets/author_box_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:zefyr/zefyr.dart';
 
 class ArticlePage extends StatefulWidget {
@@ -33,40 +33,43 @@ class _ArticlePageState extends State<ArticlePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       appBar: AppBar(
-         centerTitle: true,
-          title: Container(
-            height: 50,
-            child: Image.asset('assets/images/logo_white_letters.png', fit: BoxFit.cover,)
-            ),
-       ),
-       body: _currentArticle == null ? 
-       Center(
-         child:  Container(
-           height:25.0, 
-           width:25.0, 
-           child: CircularProgressIndicator()
-          )
-       ):
-       ZefyrScaffold(
-         child: _getArticleBody()
-       )
-    );
+        appBar: AppBar(
+          centerTitle: true,
+            title: Container(
+              height: 50,
+              child: Image.asset('assets/images/logo_white_letters.png', fit: BoxFit.cover,)
+              ),
+        ),
+        body: StreamBuilder<DocumentSnapshot>(
+          builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot){
+            if(snapshot.hasError){
+              return Text('Error al consultar las lines');
+            }
+
+            if(snapshot.connectionState == ConnectionState.waiting){
+              return Center(child: CircularProgressIndicator(),);
+            }
+            _currentArticle = Article.fromJson(snapshot.data.data());
+            return ZefyrScaffold(
+              child: _getArticleBody()
+            );
+          },
+        )
+      );
   }
 
   ///This function retrieve an article
-  _loadArticle(){
-    _service.getArticle(widget.idArticle).then((value){
-      _currentArticle = value;
-      print(widget.idArticle);
-      setState(() {
-        date = DateTime.fromMillisecondsSinceEpoch(_currentArticle.date.seconds*1000);
-        hourFormated = DateFormat.jm().format(date);
-        dateFormated = DateFormat.yMMMEd().format(date);
-        list = _currentArticle.references.references;
-        print(list[0].reference);
-      });
+  _loadArticle() async{
+    String id = widget.idArticle;
+    DocumentReference docRef = FirebaseFirestore.instance.doc('articles/$id');
+    DocumentSnapshot document;
+    await docRef.get().then((value){
+      document = value;
+      print(value);});
+    setState(() {
+      _currentArticle = Article.fromJson(document.data()); 
     });
+    
   }
 
   ///This function return article body container 
@@ -94,7 +97,7 @@ class _ArticlePageState extends State<ArticlePage> {
                  padding: imageNearBorder(),
                  child: FadeInImage(
                   placeholder: AssetImage('assets/images/logo_white_bg.png'),
-                  image: NetworkImage(_currentArticle.imgurl),
+                  image: _currentArticle.imgurl==null? AssetImage('assets/images/logo_white_bg.png') :NetworkImage(_currentArticle.imgurl),
                   fit: BoxFit.cover,
                  ),
                ),

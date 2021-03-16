@@ -104,7 +104,22 @@ class _SelectCategoryWidgetState extends State<SelectCategoryWidget> {
       _categories = value;
        if(mounted){
          setState(() {
-         _selectionFlags = List(_categories.items.length);
+          _selectionFlags = List(_categories.items.length);
+          _selectionFlags.forEach((element) {
+            print(element);
+          });
+          for(int i=0; i<_selectionFlags.length;i++){
+            _selectionFlags[i] = false;
+          }
+          if(widget.article.idcategory!=null){
+            for(int i = 0; i<_categories.items.length; i++){
+                if(_categories.items[i].id==widget.article.idcategory){
+                  _selectionFlags[i] = true;
+                  print(widget.article.idcategory);
+                }   
+              }
+          }
+          
          _buttonModalFlag = true;
        });
        }
@@ -121,6 +136,7 @@ class _SelectCategoryWidgetState extends State<SelectCategoryWidget> {
     });
     
   }
+
 
 
 }

@@ -1,7 +1,0 @@
-class ArticleLabel{
-  
-}
-
-class ArticleLabels{
-  
-}

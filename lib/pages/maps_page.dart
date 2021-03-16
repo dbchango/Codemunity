@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'package:code_munnity/models/library.dart';
+import 'package:code_munnity/providers/institutes_provider.dart';
 import 'package:code_munnity/providers/libraries_service.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 class MapsPage extends StatefulWidget {
   MapsPage({Key key}) : super(key: key);
 
@@ -12,8 +13,9 @@ class MapsPage extends StatefulWidget {
 }
 
 class _MapsPageState extends State<MapsPage> {
-  LibrariesService _librariesService;
-  Libraries _libraries;
+  InstituteService _librariesService;
+  Institutes _institutes;
+  Set<Marker> _markers = new Set();
   Completer<GoogleMapController> _controller = Completer();
 
   static final CameraPosition _kGooglePlex = CameraPosition(
@@ -25,7 +27,7 @@ class _MapsPageState extends State<MapsPage> {
   void initState() {
     
     super.initState();
-    _librariesService = new LibrariesService();
+    _librariesService = new InstituteService();
     _getLibreries();
   }
 
@@ -67,11 +69,21 @@ class _MapsPageState extends State<MapsPage> {
     );
   }
 
+  void drawInstitutesLocations(){
+    _institutes.items.forEach((element) {
+      Marker mark = new Marker(
+        markerId: MarkerId(element.name),
+        infoWindow: InfoWindow(title: element.name),
+        position: element.location.getGeo()
+      ); 
+    });
+  }
+
   void _getLibreries(){
     _librariesService.getAll().then((value) {
-      _libraries = value;
+      _institutes = value;
       print("after assign");
-      _libraries.items.forEach((element) { print(element.name); });
+      _institutes.items.forEach((element) { print(element.name); });
     });
   }
 

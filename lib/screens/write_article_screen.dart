@@ -27,7 +27,7 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   List<Widget> elements;
   List<Widget> _references;
-  var _size;
+  dynamic _size;
   File _img ;
   final picker = ImagePicker();
   ArticleService _service = new ArticleService();
@@ -71,7 +71,9 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
         _getTitleInput(),
         _getAbstractInput(),
         _getReferencesBox(),
+
         _getImageContainer(),
+        
         Container(
           padding: EdgeInsets.all(25),
           child: Container(
@@ -88,11 +90,31 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
         _getWriteButton(),
         _getSelectCategory(),
         _getSaveButton(),
+        _printArticle()
       ],
     );
   }
 
-  
+  Widget _printArticle(){
+    return MaterialButton(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0)
+      ),  
+      color: Colors.amber,
+      onPressed: (){
+          print(_article.toJson());
+        }, 
+        child: Container(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text("Print article"),
+            Icon(Icons.label),
+          ],
+        ),
+      )
+    );
+  }
 
   Widget _getAddLabelsButton(){
     return MaterialButton(
@@ -325,13 +347,13 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
     print(articleToJson(_article));
     final arrayLength = _article.references.references.length;
       final String newTitle = "Referencia "+(arrayLength+1).toString(); 
-      //_referencesNames.add(newTitle);
       _article.references.references.add(Reference(reference: newTitle));
       setState(() {
           _references.add(
           Padding(
             padding: const EdgeInsets.symmetric(vertical:8.0),
             child: TextFormField(
+              initialValue: _article.references.references[arrayLength].reference,
               onChanged: (value) {
                 print(value);
                 _article.references.references[arrayLength].reference = value;
@@ -357,6 +379,7 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
   /// This function return title input widget
   Widget _getTitleInput(){
     return TextFormField(
+      initialValue: _article.title,
       onChanged: (value) => _article.title = value,
       focusNode: new FocusNode(),
       decoration: InputDecoration(
@@ -382,6 +405,7 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
   /// This function return the abstract input
   Widget _getAbstractInput(){
     return TextFormField(
+      initialValue: _article.abstract,
       onChanged: (value) => _article.abstract = value,
       focusNode: new FocusNode(),
       decoration: InputDecoration(

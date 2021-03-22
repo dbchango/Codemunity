@@ -2,6 +2,7 @@
 
 import 'package:code_munnity/bloc/provider_bloc.dart';
 import 'package:code_munnity/pages/login_page.dart';
+import 'package:code_munnity/pages/main_page.dart';
 import 'package:code_munnity/providers/content_provider.dart';
 import 'package:code_munnity/utils/preferences.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -15,9 +16,7 @@ Future<void> main() async {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider<ContentProvider>(
       create: (_) => ContentProvider(),
-    ),
- 
-    
+    )
   ], child: MyApp()));
 }
 
@@ -47,13 +46,13 @@ class MyApp extends StatelessWidget {
             }
             
             if(snapshot.connectionState == ConnectionState.done){
-              return LoginPage();
+              return MainPage();
             }
             return Container(
                   child: Center(
                     child: CircularProgressIndicator()
                   )
-                );
+                ); 
           },
         ),
         themeMode: prefs.mode == true ?ThemeMode.dark:ThemeMode.light,

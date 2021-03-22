@@ -5,6 +5,7 @@ import 'package:code_munnity/theme/constants.dart';
 import 'package:code_munnity/widgets/article_content_widget.dart';
 import 'package:code_munnity/widgets/author_box_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:zefyr/zefyr.dart';
 
 class ArticlePage extends StatefulWidget {
@@ -19,19 +20,21 @@ class _ArticlePageState extends State<ArticlePage> {
   Article _currentArticle;
   ArticleService _service;
   DateTime date;
-  var hourFormated;
-  var dateFormated;
+  
   List<Reference> list = List();
   @override
   void initState() {
     _service = new ArticleService();
     super.initState();
-    _loadArticle();
+
     
   }
   
   @override
   Widget build(BuildContext context) {
+    
+    String id = widget.idArticle;
+    DocumentReference docRef = FirebaseFirestore.instance.doc('articles/$id');
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
@@ -41,9 +44,10 @@ class _ArticlePageState extends State<ArticlePage> {
               ),
         ),
         body: StreamBuilder<DocumentSnapshot>(
+          stream: docRef.snapshots(),
           builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot){
             if(snapshot.hasError){
-              return Text('Error al consultar las lines');
+              return Text('Error al consultar.');
             }
 
             if(snapshot.connectionState == ConnectionState.waiting){
@@ -58,22 +62,13 @@ class _ArticlePageState extends State<ArticlePage> {
       );
   }
 
-  ///This function retrieve an article
-  _loadArticle() async{
-    String id = widget.idArticle;
-    DocumentReference docRef = FirebaseFirestore.instance.doc('articles/$id');
-    DocumentSnapshot document;
-    await docRef.get().then((value){
-      document = value;
-      print(value);});
-    setState(() {
-      _currentArticle = Article.fromJson(document.data()); 
-    });
-    
-  }
+
 
   ///This function return article body container 
   Widget _getArticleBody(){
+    final date = DateTime.fromMillisecondsSinceEpoch(_currentArticle.date.seconds*1000);
+    var hourFormated = DateFormat.jm().format(date);
+    var dateFormated = DateFormat.yMMMEd().format(date);
     return Container(
            child: ListView(
              children: <Widget>[
@@ -87,6 +82,7 @@ class _ArticlePageState extends State<ArticlePage> {
                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                    children: <Widget>[
                      Text(dateFormated+" "+hourFormated),
+                     
                      AuthorBoxWidget(
                        author: _currentArticle.author,
                      )

@@ -70,9 +70,9 @@ BoxDecoration boxDecForm(context){
 
 
 
-Widget getLogoImg(){
+Widget getLogoImg({double height=50}){
   return Container(
-            height: 50,
+            height: height,
             child: Image.asset('assets/images/logo_white_letters.png', fit: BoxFit.cover,)
             );
 }

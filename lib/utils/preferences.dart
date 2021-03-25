@@ -35,4 +35,13 @@ class Preferences{
   get  gauthor{
     return _prefs.getString("gauthor") ?? "";
   }
+
+  get token {
+    return _prefs.getString('token') ?? "";
+  }
+
+  set token(String value) {
+    _prefs.setString('token', value);
+  }
+  
 }

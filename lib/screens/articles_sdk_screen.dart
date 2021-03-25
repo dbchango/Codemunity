@@ -24,11 +24,7 @@ class ArticlesSDKWidget extends StatelessWidget {
                     width: 50.0,
                     child: Center(child: CircularProgressIndicator()));
               }
-
-
               
-              print(snapshot.data);
-
               return ListView(
                 children: snapshot.data.docs.map((DocumentSnapshot d) {
                   Article art = Article.fromJson(d.data());

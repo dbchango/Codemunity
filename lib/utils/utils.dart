@@ -9,3 +9,11 @@ Author test = new Author(
       knowledgearea: "Data Scientis",
       about: "I am an entuciastic pragmatic programmer that loves learn more and more."
     );
+
+class FCMNotification {
+  String title; 
+  String body; 
+  String url;
+
+  FCMNotification({this.title, this.body, this.url});
+}

@@ -26,14 +26,10 @@ class _EditWidgetState extends State<EditWidget> {
     _controller = ZefyrController(document);
     _focusNode = FocusNode();
   }
-  
-
 
   @override
   Widget build(BuildContext context) {
 
-    
-  
   final _scaffoldKey = GlobalKey<ScaffoldState>();
     return Scaffold(
       key: _scaffoldKey,

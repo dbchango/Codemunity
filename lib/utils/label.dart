@@ -1,3 +1,7 @@
+
+
+
+
 class Label{
   String name;
 
@@ -6,6 +10,10 @@ class Label{
     name = json['name'];
 
   }
+
+  Map<String, dynamic> toJson()=>{
+    "name" : name
+  };
 }
 class Labels{
   List<Label> items = List();
@@ -16,4 +24,6 @@ class Labels{
       items.add(label);
     }
   }
+
+
 }

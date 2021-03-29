@@ -1,8 +1,7 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:code_munnity/models/article.dart';
-import 'package:code_munnity/pages/article_page.dart';
 import 'package:code_munnity/providers/articles_service.dart';
-import 'package:code_munnity/utils/preferences.dart';
 import 'package:code_munnity/widgets/article_box_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -14,67 +13,47 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final _prefs = Preferences();
   ArticleService _service;
   Articles _list;
   @override
   void initState() {
     super.initState();
     _service = new ArticleService();
-    _loadArticles();
     
   }
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    print(size);
-    return _list == null 
-    ? Center(child: Text("Loading articles...")): Container(
-      
-      child: Padding(
-                
-                 padding: const EdgeInsets.symmetric(horizontal: 5),
-                 child: ListView(
-                   children: _list.items.map((e) {
-                     return _getArticleItem(e);
-                   }).toList(),
-                 )
-                ),
-    );
+    CollectionReference articles = FirebaseFirestore.instance.collection('articles');
+    return StreamBuilder<QuerySnapshot>(
+      stream: articles.snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
+        if(snapshot.hasError){
+          return Text(snapshot.error.toString());
+        }
+        if (snapshot.connectionState == ConnectionState.waiting) {
+                return Scaffold(
+                  body: Center(child: CircularProgressIndicator(),),
+                );
+        }
+        return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 5),
+        child: ListView(
+                children: snapshot.data.docs.map((DocumentSnapshot d) {
+                  Article art = Article.fromJson(d.data());
+                  art.id = d.id;
+                  return ArticleBoxWidget(
+                    article: art,
+                  );
+                } ).toList(),
+              )
+        );
+      }
+    ); 
   }
 
   
 
-  _loadArticles() {
-
-    _service.getArticles().then((value) {
-      setState(() {
-        _list = value;
-      });
-    });
-  }
-
-  Widget _getArticleItem(Article article){
-    return GestureDetector(
-      onTap: (){
-        Navigator.push(
-          context, 
-          MaterialPageRoute(builder: 
-          (context)=>ArticlePage(
-            idArticle:article.id
-          )));
-      },
-      child: ArticleBoxWidget(
-        title: article.title,
-        author: article.author,
-        abstract: article.abstract,
-        stars: article.stars,
-        readers: article.readers,
-      )
-    ,);
-      
-    
-  }
 
 }

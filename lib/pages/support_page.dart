@@ -221,12 +221,5 @@ class _SupporPageState extends State<SupporPage> {
 
   }
 
-  SnackBarAction _actionSnackbar(bool flag){
-    return flag == true ? SnackBarAction(
-      label: 'Return to home', 
-      onPressed: (){
-        print('Ok lets return to home');
-      }
-    ):null;
-  }
+
 }

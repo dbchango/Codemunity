@@ -1,16 +1,24 @@
 [
     {
-        "name":"Library 1",
+        "name":"ESPE - Sede Latacunga",
         "location":{
-            "longitud": "",
-            "latitude":""
+            "longitud": "-78.58275125315424",
+            "latitude":"-0.9909459352140626"
         }
     },
     {
-        "name":"Library 2",
+        "name":"EPN",
         "location":{
-            "longitud": "",
-            "latitude":""
+            "longitud": "-78.48846652266673",
+            "latitude":"-0.21029889421013187"
+        }
+    },
+
+    {
+        "name":"ESPOL",
+        "location":{
+            "longitud": "-79.96439304283295",
+            "latitude":"-2.147920100267839"
         }
     }
 ]

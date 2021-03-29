@@ -1,9 +1,7 @@
 import 'dart:io';
-
 import 'package:code_munnity/models/article.dart';
 import 'package:code_munnity/providers/articles_service.dart';
 import 'package:code_munnity/providers/storage_service.dart';
-import 'package:code_munnity/screens/collection_screen.dart';
 import 'package:code_munnity/screens/edit_widget.dart';
 import 'package:code_munnity/theme/constants.dart';
 import 'package:code_munnity/utils/label.dart';
@@ -14,7 +12,6 @@ import 'package:code_munnity/widgets/select_category_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:quill_delta/quill_delta.dart';
 import 'package:zefyr/zefyr.dart';
 
 class WriteArticleScreen extends StatefulWidget {
@@ -25,31 +22,26 @@ class WriteArticleScreen extends StatefulWidget {
 }
 
 class _WriteArticleScreenState extends State<WriteArticleScreen> {
-  bool _buttonModalFlag = false;
-  ZefyrController _editorController;
-  FocusNode _editorFocusNode;
   Article _article;
-  List<Widget> elements = new List<Widget>();
-  static List<Widget> _references = <Widget>[];
-  static List<String> _referencesNames = <String>[];
   final formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  ArticleService _service = new ArticleService();
-  StorageService _storageService = StorageService();
-  var _showEditor = false;
-  var _size;
+  List<Widget> elements;
+  List<Widget> _references;
+  dynamic _size;
   File _img ;
   final picker = ImagePicker();
+  ArticleService _service = new ArticleService();
+  
+  StorageService _storageService = new StorageService();
   @override
   void initState() {
     super.initState();
+    elements = new List<Widget>();
+    _references = new List<Widget>();
     _article = new Article();
     _article.labels = new Labels();
     _article.idauthor = test.id;
     _article.references = new References();
-    final document = _loadDocument();
-    _editorController = ZefyrController(document);
-    _editorFocusNode = FocusNode();
   }
 
   @override
@@ -58,7 +50,6 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
     return Scaffold(
       key: _scaffoldKey,
       body: ZefyrScaffold(
-        
         child: Form(
           key: formKey,
           child: _getFormContent()
@@ -69,93 +60,153 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
 
   /// This function returns the form 
   Widget _getFormContent(){
-    final _size = MediaQuery.of(context).size;
+    //final _size = MediaQuery.of(context).size;
     return ListView(
+      padding: topElementsPadding(),
       children: <Widget>[
-        Padding(
-          padding: topElementsPadding(),
-          child: Container(
-            child: Text("Nueva Publicación" ,
+        Text("Nueva Publicación" ,
             maxLines: 1,
-            style: titleStyles(),)
+            style: titleStyles(),
           ),
-        ),
         _getTitleInput(),
         _getAbstractInput(),
-        _getLabelsWidgets(),
         _getReferencesBox(),
+
         _getImageContainer(),
+        
+        Container(
+          padding: EdgeInsets.all(25),
+          child: Container(
+            child: Column(
+              children: [
+                Row(children: [Text("Etiquetas: "), Icon(Icons.label)],),
+                _getLabelsWidgets(),
+              ],
+            ),
+          ),
+        ),
+        
+        _getAddLabelsButton(),
+        _getWriteButton(),
+        _getSelectCategory(),
         _getSaveButton(),
-        
-        TextButton(
-          onPressed: (){
-            Navigator.push(context,  MaterialPageRoute(builder: (context)=> EditWidget(article: _article,)));
-          }, 
-          child: Container(
-          child: Row(
-            children: <Widget>[
-              Icon(Icons.description_outlined),
-              Text("Edit article")
-            ],
-          ),
-          )
-        ),
-        TextButton(
-          onPressed: (){
-            showModalBottomSheet(
-              context: context,
-              builder: (context) {
-                return AddLabelsWidget(article: _article,);
-              },
-
-            ).then((value) {
-              _getLabels();
-              print(_article.toJson());
-            });
-          }, 
-          child: Container(
-          child: Row(
-            children: <Widget>[
-              Icon(Icons.description_outlined),
-              Text("Add labels")
-              
-            ],
-          ),
-          )
-        ),
-        TextButton(
-          onPressed: (){
-            showModalBottomSheet(
-              context: context,
-              builder: (context) {
-                return SelectCategoryWidget(article: _article,);
-              },
-
-            ).then((value) {
-              print("Modal cerrado");
-              print(_article.toJson());
-            });
-          }, 
-          child: Container(
-          child: Row(
-            children: <Widget>[
-              Icon(Icons.description_outlined),
-              Text("Seleccionar categoria")
-            ],
-          ),
-          )
-        ),
-        
+        _printArticle()
       ],
     );
   }
 
+  Widget _printArticle(){
+    return MaterialButton(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0)
+      ),  
+      color: Colors.amber,
+      onPressed: (){
+          print(_article.toJson());
+        }, 
+        child: Container(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text("Print article"),
+            Icon(Icons.label),
+          ],
+        ),
+      )
+    );
+  }
+
+  Widget _getAddLabelsButton(){
+    return MaterialButton(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0)
+      ),  
+      color: Colors.amber,
+      onPressed: (){
+          showModalBottomSheet(
+            context: context,
+            builder: (context) {
+              return AddLabelsWidget(article: _article,);
+            },
+          ).then((value) {
+            _getLabels();
+            print(_article.toJson());
+          });
+        }, 
+        child: Container(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text("Añadir etiqueta"),
+            Icon(Icons.label),
+          ],
+        ),
+      )
+    );
+  }
+
+  Widget _getSelectCategory(){
+    return MaterialButton(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0)
+        ),  
+        color: Colors.amber,
+        onPressed: (){
+          showModalBottomSheet(
+            context: context,
+            builder: (context) {
+              return SelectCategoryWidget(article: _article,);
+            },
+          ).then((value) {
+              print("Modal cerrado");
+              print(_article.toJson());
+            }
+          );
+        }, 
+        child: Container(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text("Seleccionar categoria"),
+              Icon(Icons.book),
+            ],
+          ),
+        )
+      );
+  }
+
+  Widget _getWriteButton(){
+    return MaterialButton(
+      color: Colors.amber,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0)
+      ),  
+      onPressed: (){
+            Navigator.push(context,  MaterialPageRoute(builder: (context)=> EditWidget(article: _article,)));
+      }, 
+      child: Container(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text("Escribir contenido"),
+          Icon(Icons.create),
+        ],
+      ),
+      )
+    );
+  }
+
+  
+
   Widget _getLabelsWidgets(){
     return Container(
-      padding: colElementsPadding(),
-      child: Row(
-        children: elements,
-      )
+        decoration: BoxDecoration(
+        ),
+        padding: colElementsPadding(),
+        child: Column(
+          
+          children: elements,
+        )
     );
   }
 
@@ -170,15 +221,34 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
     });
   }
 
+  /// This function that return the save button widget
+  Widget _getSaveButton(){
+    return MaterialButton(
+      color: Theme.of(context).accentColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0)
+      ), 
+      onPressed: _onSave, 
+      child: Container(
+
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("Publicar"),
+            Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Icon(Icons.send),
+            ),  
+          ],
+        ),
+      )
+    );
+  }
+
   /// This function returns reference box content
   Widget _getReferencesBox(){
     return Container(
-      decoration: BoxDecoration(
-        border: Border.all(
-          width: 1
-        ),
-        borderRadius: BorderRadius.circular(5)
-      ),
+      decoration: boxDecForm(context),
       child: Column(
         children: <Widget>[
           Padding(
@@ -241,17 +311,12 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
     return Padding(
       padding: colElementsPadding(),
       child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5),
-          border: Border.all(
-            width: 1.0
-          )
-        ),
+        decoration: boxDecForm(context),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.all(5),
+              padding: EdgeInsets.all(25),
               child: _img!=null?Image.file(_img):Image.asset('assets/images/no-image.png'),
 
             ),
@@ -279,22 +344,25 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
 
   /// Function that add references spaces
   _onTapAddRef(){
+    print(articleToJson(_article));
     final arrayLength = _article.references.references.length;
       final String newTitle = "Referencia "+(arrayLength+1).toString(); 
-      //_referencesNames.add(newTitle);
       _article.references.references.add(Reference(reference: newTitle));
       setState(() {
           _references.add(
           Padding(
             padding: const EdgeInsets.symmetric(vertical:8.0),
             child: TextFormField(
+              initialValue: _article.references.references[arrayLength].reference,
               onChanged: (value) {
                 print(value);
                 _article.references.references[arrayLength].reference = value;
               },
-              decoration: InputDecoration(        
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(   
+                prefixIcon: Icon(Icons.format_quote_rounded),
+                border: inputBorder(context),
                 labelText: _article.references.references[arrayLength].reference,
+                
                 alignLabelWithHint: true 
               ),
               onSaved: (newValue) {
@@ -306,51 +374,21 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
       });
   }
 
-  /// This function that return the save button widget
-  Widget _getSaveButton(){
-    return Padding(
-      padding: const EdgeInsets.all(4.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: _size*.7,
-          
-            child: TextButton(onPressed: _onSave, child: Container(
-              decoration: BoxDecoration(
-              color: Colors.amber,
-              borderRadius: BorderRadius.circular(5)
-            ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("Publicar"),
-                  Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: Icon(Icons.send),
-                  ),
-                  
-                ],
-              ),
-            ))
-          ),
-          
-        ],
-      )
-    );
-  }
+  
 
   /// This function return title input widget
   Widget _getTitleInput(){
-    
     return TextFormField(
+      initialValue: _article.title,
       onChanged: (value) => _article.title = value,
       focusNode: new FocusNode(),
       decoration: InputDecoration(
-        //border: InputBorder.none,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20.0),
+          borderSide: BorderSide()
+        ),
         labelText: "Título",
-        //alignLabelWithHint: true,
-          
+        prefixIcon: Icon(Icons.text_fields)
       ),
       maxLength: 40,
       onSaved: (newValue) => _article.title = newValue,
@@ -367,10 +405,12 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
   /// This function return the abstract input
   Widget _getAbstractInput(){
     return TextFormField(
+      initialValue: _article.abstract,
       onChanged: (value) => _article.abstract = value,
       focusNode: new FocusNode(),
       decoration: InputDecoration(
-        //border: InputBorder.none,
+        prefixIcon: Icon(Icons.text_format),
+        border: inputBorder(context),
         labelText: "Resúmen",
         //alignLabelWithHint: true,
           
@@ -397,23 +437,23 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
   }
 
   /// Function that POST the article
-  _onSave() {
+  _onSave()async {
     _getLabels();
     print(_article.toJson());
-    //if( !formKey.currentState.validate() ) return;
-    //formKey.currentState.save();
-    //print(_article.title);
-    //print(_article.abstract);
-    //print(_article.content);
+    if( !formKey.currentState.validate() ) return;
+    formKey.currentState.save();
+    print(_article.title);
+    print(_article.abstract);
+    print(_article.content);
   _article.references.references.forEach((element) {
     print(element.reference);
   });
-    /*
-    if(!_formKey.currentState.validate())return;
-    _formKey.currentState.save();
-    /*if (_img != null) {
+    
+    if(!formKey.currentState.validate())return;
+    formKey.currentState.save();
+    if (_img != null) {
       _article.imgurl = await _storageService.uploadImg(_img);
-    }*/
+    }
 
     print(_article.toJson());
     print(_article.title);
@@ -440,7 +480,7 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
         );
       }
     );
-    */
+    
 
   }
 
@@ -457,12 +497,6 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
     });
   }
 
-  /// This function return the document for the Zefyr text editor 
-  NotusDocument _loadDocument(){
-    final Delta delta = Delta()..insert("Contenido ... \n");
-    return NotusDocument.fromDelta(delta); 
-  }
 
-  
 
 }

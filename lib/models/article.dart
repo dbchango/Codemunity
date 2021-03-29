@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:code_munnity/models/author.dart';
 import 'package:code_munnity/models/category.dart';
 import 'package:code_munnity/utils/label.dart';
@@ -9,7 +10,7 @@ String articleToJson(Article data) => json.encode(data.toJson());
 class Article{
   String id;
   String title;
-  Date date;
+  Timestamp date;
   References references;
   String idcategory;
   String idauthor;
@@ -39,7 +40,7 @@ class Article{
     this.abstract
   });
 
-  factory Article.fromJson(Map<String, dynamic> json) => Article(
+  factory Article.fromJson(Map<dynamic, dynamic> json) => Article(
       id : json['id'],
       title : json['title'],
       labels : Labels.fromJsonList(json['labels']),
@@ -50,7 +51,7 @@ class Article{
       stars : json['stars'],
       readers : json['readers'],
       references: References.fromJsonList(json['references']),
-      date: Date.fromJson(json["date"]),
+      date: json["date"],
       imgurl: json['imgurl'],
       idcategory: json['idcategory'],
       category:Category.fromJsonMap(json['category'])
@@ -60,7 +61,7 @@ class Article{
     "id": id, 
     "title": title, 
     "idauthor": idauthor,
-    "labels": labels, 
+    "labels": labels.items, 
     "content": content, 
     "author": author,
     "readers": readers,
@@ -123,7 +124,7 @@ class Date {
     int seconds;
     int nanoseconds;
 
-    factory Date.fromJson(Map<String, dynamic> json) => Date(
+    factory Date.fromJson(Map<dynamic, dynamic> json) => Date(
         seconds: json["_seconds"],
         nanoseconds: json["_nanoseconds"],
     );

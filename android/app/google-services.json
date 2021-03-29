@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "759851661725",
+    "firebase_url": "https://consultoriovet-eb010.firebaseio.com",
+    "project_id": "consultoriovet-eb010",
+    "storage_bucket": "consultoriovet-eb010.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:759851661725:android:894f08a903ad3095bad774",
+        "android_client_info": {
+          "package_name": "com.academia.code_munnity"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "759851661725-2vnktjse2ni4dcjnrdh4lc8rvcnmbnml.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVZZnULC9JbrhVLLFg9QD8abJS3PvVgf4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "759851661725-2vnktjse2ni4dcjnrdh4lc8rvcnmbnml.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

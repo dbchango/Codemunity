@@ -1,5 +1,4 @@
-import 'package:code_munnity/models/article.dart';
-import 'package:code_munnity/providers/articles_service.dart';
+
 import 'package:code_munnity/widgets/area_btn_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -11,19 +10,18 @@ class SearcScreen extends StatefulWidget {
 }
 
 class _SearcScreenState extends State<SearcScreen> {
-  ArticleService _service;
-  Articles _list;
+  //ArticleService _service;
+  //Articles _list;
   @override
   void initState() {
-    _service = new ArticleService();
+    //_service = new ArticleService();
     super.initState();
     
   }
   
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context)
-        .size;
+    //var size = MediaQuery.of(context).size;
     return Stack(
       children: [
         Container(

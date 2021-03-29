@@ -7,7 +7,7 @@ class LoginProvider extends InheritedWidget{
   static LoginProvider _instance;
   factory LoginProvider({Key key, Widget child}){
     if(_instance==null){
-      _instance = new LoginProvider(key: key, child: child);
+      _instance = new LoginProvider._internal(key: key, child: child);
     }
     return _instance;
   }
@@ -20,6 +20,6 @@ class LoginProvider extends InheritedWidget{
   bool updateShouldNotify(InheritedWidget oldWidget) => true;
 
   static LoginBloc of(BuildContext context){
-    return (context.dependOnInheritedWidgetOfExactType<LoginProvider>()).loginBloc;
+    return context.dependOnInheritedWidgetOfExactType<LoginProvider>().loginBloc;
   }
 }

@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:code_munnity/models/author.dart';
+import 'package:code_munnity/pages/login_page.dart';
 import 'package:code_munnity/pages/maps_page.dart';
 import 'package:code_munnity/pages/profile_page.dart';
 import 'package:code_munnity/pages/support_PAGE.dart';
+import 'package:code_munnity/providers/auth.dart';
 import 'package:code_munnity/providers/content_provider.dart';
 import 'package:code_munnity/screens/collection_screen.dart';
 import 'package:code_munnity/screens/home_screen.dart';
@@ -10,8 +14,12 @@ import 'package:code_munnity/screens/write_article_screen.dart';
 import 'package:code_munnity/theme/constants.dart';
 import 'package:code_munnity/utils/preferences.dart';
 import 'package:code_munnity/utils/utils.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+
 
 class MainPage extends StatefulWidget {
   MainPage({Key key}) : super(key: key);
@@ -21,6 +29,8 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  AuthService _auth = AuthService();
   int _selectedIndex = 0;
   final PageStorageBucket _bucket = PageStorageBucket();
   
@@ -42,6 +52,88 @@ class _MainPageState extends State<MainPage> {
     )
   ];
 
+  // get message content 
+  FCMNotification _getContent(Map<dynamic, dynamic> message){
+    FCMNotification content = new FCMNotification();
+    if (Platform.isIOS){
+      content.title = message['aps']['alert']['title'];
+      content.body = message['aps']['alert']['body'];
+      content.url = message['url'];
+    }else{
+      Map<dynamic, dynamic> notification = message['notification'];
+      Map<dynamic, dynamic> data = message['data'];
+      content.title = notification['title'];
+      content.body = notification['body'];
+      content.url = data['url'];
+    }
+    return content;
+  }
+
+  _goNotification(Map<dynamic, dynamic> message){
+    FCMNotification content = _getContent(message);
+    if (content != null){
+      showDialog(
+        context: context, 
+        barrierDismissible: false, 
+        builder: (BuildContext context){
+          return AlertDialog(
+            title: Container(
+              margin: EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
+              child: Text(content.title)
+            ),
+            content: Container(
+              margin: EdgeInsets.all(7.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Container(
+                    margin: EdgeInsets.all(10.0),
+                    child: Text(content.body)
+                  ),
+                  content.url == null ? Container(): Image.network(content.url)
+                ],
+                
+              ),
+            ),
+            actions: [
+              FlatButton(
+                padding: EdgeInsets.zero,
+                child: Text('Cerrar'),
+                onPressed: (){
+                  Navigator.of(context).pop();
+                }, 
+                
+              )
+            ],
+          );
+        }
+      );
+    }
+  }
+
+  void _iOSPermission(){
+    _firebaseMessaging.requestNotificationPermissions(
+      IosNotificationSettings(sound: true, badge: true, alert: true));
+
+    _firebaseMessaging.onIosSettingsRegistered.listen((IosNotificationSettings settings) { });
+  }
+
+  _configFCM(){
+    if(Platform.isIOS) _iOSPermission();
+
+    _firebaseMessaging.configure(
+      onMessage: (Map<dynamic, dynamic> message) async {
+        _goNotification(message);
+      },
+      onResume: (Map<dynamic, dynamic> message) async {
+        _goNotification(message);
+      },
+      onLaunch: (Map<dynamic, dynamic> message) async {
+        _goNotification(message);
+      }
+    );
+  }
+
   void _onItemTapped(int index){
     setState(() {
       _selectedIndex = index;      
@@ -51,16 +143,37 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
-    
+    _configFCM();
+
   }
+
+
 
   @override
   Widget build(BuildContext context) {
+    
+
     return Scaffold(
         drawer: getdrawer(test),
         appBar: AppBar(
           centerTitle: true,
           title: getLogoImg(),
+          actions: <Widget>[
+            Builder(builder: (BuildContext context){
+              return FlatButton(
+                onPressed: () async {
+                  await _auth.signOut();
+                }, 
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Icon(Icons.exit_to_app),
+                    Text("Sign Out")
+                  ],
+                )
+              );
+            })
+          ],
         ),
         body: PageStorage(bucket: _bucket, child: _pages[_selectedIndex],),
         bottomNavigationBar: BottomNavigationBar(
@@ -154,6 +267,17 @@ class _MainPageState extends State<MainPage> {
               ),
             ),
             Divider(),
+            ListTile(
+              leading: new Icon(Icons.exit_to_app),
+              title: new Text("Salir"),
+              onTap: () {
+                prefs.token = "";
+              _contentProvider.token = prefs.token;
+              Navigator.push(
+                context, MaterialPageRoute(builder: (context) => LoginPage()));
+              setState(() {});
+              },
+            ),
         ],
       ),
     );

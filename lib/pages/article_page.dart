@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:code_munnity/models/article.dart';
-import 'package:code_munnity/providers/articles_service.dart';
 import 'package:code_munnity/theme/constants.dart';
 import 'package:code_munnity/widgets/article_content_widget.dart';
 import 'package:code_munnity/widgets/author_box_widget.dart';
@@ -18,16 +17,11 @@ class ArticlePage extends StatefulWidget {
 
 class _ArticlePageState extends State<ArticlePage> {
   Article _currentArticle;
-  ArticleService _service;
-  DateTime date;
   
   List<Reference> list = List();
   @override
   void initState() {
-    _service = new ArticleService();
     super.initState();
-
-    
   }
   
   @override
@@ -62,8 +56,6 @@ class _ArticlePageState extends State<ArticlePage> {
       );
   }
 
-
-
   ///This function return article body container 
   Widget _getArticleBody(){
     final date = DateTime.fromMillisecondsSinceEpoch(_currentArticle.date.seconds*1000);
@@ -82,7 +74,6 @@ class _ArticlePageState extends State<ArticlePage> {
                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                    children: <Widget>[
                      Text(dateFormated+" "+hourFormated),
-                     
                      AuthorBoxWidget(
                        author: _currentArticle.author,
                      )
@@ -111,14 +102,12 @@ class _ArticlePageState extends State<ArticlePage> {
                  padding: colElementsPadding(),
                  child: Container(
                     decoration: BoxDecoration(
-                    color: Colors.grey[200],
                     borderRadius: BorderRadius.circular(5)
                    ),
                    width: double.infinity,
                    child: Column(
-                     
                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                     children: list == null ? []:list.map((e) {
+                     children: _currentArticle.references.references == null ? []:_currentArticle.references.references.map((e) {
                        return _getReference(e);
                      }).toList(),
                    ),
@@ -133,8 +122,11 @@ class _ArticlePageState extends State<ArticlePage> {
   Widget _getReference(Reference ref){
     return Container(
       alignment: Alignment.centerLeft,
-   
-      child: Text("[${(list.indexOf(ref)+1).toString()}] ${ref.reference}", textAlign: TextAlign.left,)
+      child: Text(
+        "[${(list.indexOf(ref)+1).toString()}] ${ref.reference}", 
+        textAlign: TextAlign.left, 
+        style: Theme.of(context).textTheme.bodyText1,
+      )
     );
   }
 

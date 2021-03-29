@@ -5,9 +5,7 @@ import 'package:code_munnity/models/quill_article.dart';
 import 'package:code_munnity/providers/articles_service.dart';
 import 'package:code_munnity/providers/quill_articles_service.dart';
 import 'package:code_munnity/screens/articles_sdk_screen.dart';
-import 'package:code_munnity/widgets/aticle_box_widget_stack.dart';
 import 'package:flutter/material.dart';
-import 'package:quill_delta/quill_delta.dart';
 import 'package:zefyr/zefyr.dart';
 
 
@@ -33,10 +31,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
   void initState() {
     _service = new ArticleService();
     super.initState();
-    // final document = _loadDocument();
-    // _controller = ZefyrController(document);
     _focusNode = FocusNode();
-    _loadArticles();
   }
 
   @override
@@ -56,27 +51,13 @@ class _CollectionScreenState extends State<CollectionScreen> {
         ),
         body: TabBarView(
           children:  [
-            _list==null? Center(child: CircularProgressIndicator()):
-            Container(
-              child: GridView.count(
-                crossAxisCount: 2,
-                crossAxisSpacing: 3,
-                childAspectRatio: .85,
-                mainAxisSpacing: 10,
-                children: _list.items.map((e) {return Container(padding: EdgeInsets.all(8), child: ArticleBoxStack(article: e,),);}).toList(),
-              ),
-            ),
+            ArticlesSDKWidget(),
             ArticlesSDKWidget()
           ],
         ),
       )
     );
   }
-/*
-  NotusDocument _loadDocument(){
-    final Delta delta = Delta()..insert("Zefyr Quick Start\n");
-    return NotusDocument.fromDelta(delta);
-  }*/
   
   void saveDocument(BuildContext context) async {
     final contents = jsonEncode(_controller.document);
@@ -92,16 +73,6 @@ class _CollectionScreenState extends State<CollectionScreen> {
       }
     );
     
-  }
-
-  _loadArticles() {
-    _service.getArticles().then((value) {
-      if(mounted){
-        setState(() {
-          _list = value;
-        });
-      }
-    });
   }
 
 }

@@ -56,7 +56,6 @@ OutlineInputBorder inputBorder(context){
   );
 }
 
-
 BoxDecoration boxDecForm(context){
   return BoxDecoration(
     
@@ -68,15 +67,12 @@ BoxDecoration boxDecForm(context){
   );
 }
 
-
-
 Widget getLogoImg({double height=50}){
   return Container(
             height: height,
             child: Image.asset('assets/images/logo_white_letters.png', fit: BoxFit.cover,)
             );
 }
-
 
 TextStyle getTitlesAccountScreen(){
   return TextStyle(

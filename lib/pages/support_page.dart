@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:code_munnity/models/support_message.dart';
 import 'package:code_munnity/providers/support_service.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ class SupporPage extends StatefulWidget {
 }
 
 class _SupporPageState extends State<SupporPage> {
+  CollectionReference _supportMessagesCollection = FirebaseFirestore.instance.collection('supportmessages');
   SupportMessage _supportMessage = new SupportMessage();
   SupportService _service = new SupportService();
   bool onSaving = false;
@@ -99,7 +101,7 @@ class _SupporPageState extends State<SupporPage> {
    
   Widget _getSubmitButton(){
     return GestureDetector(
-      onTap: _submitForm,
+      onTap: _submitFormSDK,
       child: Container(
         child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -107,7 +109,7 @@ class _SupporPageState extends State<SupporPage> {
                   Container(
                     width: _size*.7,
                     child: TextButton(
-                      onPressed: onSaving == false? _submitForm: null, 
+                      onPressed: onSaving == false? _submitFormSDK: null, 
                       child: Container(
                         decoration: BoxDecoration(
                         color: Colors.amber,
@@ -221,5 +223,29 @@ class _SupporPageState extends State<SupporPage> {
 
   }
 
+  _submitFormSDK() async {
+    if( !formKey.currentState.validate() ) return;
+    setState(() {
+      onSaving = true;
+    });
+    formKey.currentState.save();
+    if (_img != null) {
+      _supportMessage.screenshot = await _service.uploadImage(_img);
+    }
+
+    _supportMessagesCollection.add(_supportMessage.toJson()).then((value) {
+      if(value!=null){
+        formKey.currentState.reset();
+        _img = null;
+        scaffoldKey.currentState.showSnackBar(
+          SnackBar(content: Text("Elemento creado con el id: "+value.id))
+        );
+        setState(() {
+          onSaving = false;
+        });
+      }
+    });
+
+  }
 
 }

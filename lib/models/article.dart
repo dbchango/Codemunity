@@ -58,10 +58,9 @@ class Article{
   );
 
   Map<String, dynamic> toJson() => {
-    "id": id, 
     "title": title, 
     "idauthor": idauthor,
-    "labels": labels.items, 
+    "labels": labels.toJson(), 
     "content": content, 
     "author": author,
     "readers": readers,

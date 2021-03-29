@@ -1,5 +1,8 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:code_munnity/models/article.dart';
+import 'package:code_munnity/models/author.dart';
+import 'package:code_munnity/models/category.dart';
 import 'package:code_munnity/providers/articles_service.dart';
 import 'package:code_munnity/providers/storage_service.dart';
 import 'package:code_munnity/screens/edit_widget.dart';
@@ -22,6 +25,7 @@ class WriteArticleScreen extends StatefulWidget {
 }
 
 class _WriteArticleScreenState extends State<WriteArticleScreen> {
+  CollectionReference _collectionReference = FirebaseFirestore.instance.collection('articles');
   Article _article;
   final formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -30,6 +34,7 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
   dynamic _size;
   File _img ;
   final picker = ImagePicker();
+  bool _onSaving = false;
   ArticleService _service = new ArticleService();
   
   StorageService _storageService = new StorageService();
@@ -228,7 +233,7 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15.0)
       ), 
-      onPressed: _onSave, 
+      onPressed: _onSaving ? null : _onSave, 
       child: Container(
 
         child: Row(
@@ -402,7 +407,7 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
       );
   }
 
-  /// This function return the abstract input
+  /// This function returns the abstract input
   Widget _getAbstractInput(){
     return TextFormField(
       initialValue: _article.abstract,
@@ -439,30 +444,14 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
   /// Function that POST the article
   _onSave()async {
     _getLabels();
-    print(_article.toJson());
     if( !formKey.currentState.validate() ) return;
     formKey.currentState.save();
-    print(_article.title);
-    print(_article.abstract);
-    print(_article.content);
-  _article.references.references.forEach((element) {
-    print(element.reference);
-  });
     
     if(!formKey.currentState.validate())return;
     formKey.currentState.save();
     if (_img != null) {
       _article.imgurl = await _storageService.uploadImg(_img);
     }
-
-    print(_article.toJson());
-    print(_article.title);
-    print(_article.content);
-    _article.references.references.forEach(
-      (element) {
-        print(element.reference);
-      }
-    );
 
     await _service.creatArticle(_article).then(
       (value) {
@@ -480,8 +469,6 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
         );
       }
     );
-    
-
   }
 
   /// This function executes the method to upload to select and upload an image

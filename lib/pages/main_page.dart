@@ -1,9 +1,11 @@
 import 'dart:io';
 
 import 'package:code_munnity/models/author.dart';
+import 'package:code_munnity/pages/login_page.dart';
 import 'package:code_munnity/pages/maps_page.dart';
 import 'package:code_munnity/pages/profile_page.dart';
 import 'package:code_munnity/pages/support_PAGE.dart';
+import 'package:code_munnity/providers/auth.dart';
 import 'package:code_munnity/providers/content_provider.dart';
 import 'package:code_munnity/screens/collection_screen.dart';
 import 'package:code_munnity/screens/home_screen.dart';
@@ -12,9 +14,12 @@ import 'package:code_munnity/screens/write_article_screen.dart';
 import 'package:code_munnity/theme/constants.dart';
 import 'package:code_munnity/utils/preferences.dart';
 import 'package:code_munnity/utils/utils.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+
 
 class MainPage extends StatefulWidget {
   MainPage({Key key}) : super(key: key);
@@ -25,7 +30,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-  
+  AuthService _auth = AuthService();
   int _selectedIndex = 0;
   final PageStorageBucket _bucket = PageStorageBucket();
   
@@ -138,14 +143,6 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
-    _firebaseMessaging.getToken().then(
-      (value) {
-        print("--------------------------------------------------------- Token--------------------------------------------------------- ");
-        // excKe1U-R_SxRDT1i90C4s:APA91bEI6b2S_O0N9yOCDtmSgqnP6o3yz8UROgo-MdjXR304Vp0bSpoHBYPCvxmvCg8_TQnApPgroITf2jOpUIB_pERg_cK0H5gegkdOoFfQsjrAbrAyMAoGxGFd0UknVvydvCuMWjEp
-
-        print(value);
-      }
-      );
     _configFCM();
 
   }
@@ -154,11 +151,29 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    
+
     return Scaffold(
         drawer: getdrawer(test),
         appBar: AppBar(
           centerTitle: true,
           title: getLogoImg(),
+          actions: <Widget>[
+            Builder(builder: (BuildContext context){
+              return FlatButton(
+                onPressed: () async {
+                  await _auth.signOut();
+                }, 
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Icon(Icons.exit_to_app),
+                    Text("Sign Out")
+                  ],
+                )
+              );
+            })
+          ],
         ),
         body: PageStorage(bucket: _bucket, child: _pages[_selectedIndex],),
         bottomNavigationBar: BottomNavigationBar(
@@ -252,6 +267,17 @@ class _MainPageState extends State<MainPage> {
               ),
             ),
             Divider(),
+            ListTile(
+              leading: new Icon(Icons.exit_to_app),
+              title: new Text("Salir"),
+              onTap: () {
+                prefs.token = "";
+              _contentProvider.token = prefs.token;
+              Navigator.push(
+                context, MaterialPageRoute(builder: (context) => LoginPage()));
+              setState(() {});
+              },
+            ),
         ],
       ),
     );

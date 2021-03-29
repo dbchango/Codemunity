@@ -24,6 +24,13 @@ class Labels{
       items.add(label);
     }
   }
+  List<Map<dynamic, dynamic>> toJson(){
+    List<Map<dynamic, dynamic>> list = new List();
+    items.forEach((element) {
+      list.add(element.toJson());
+    });
+    return list;
+  }
 
 
 }

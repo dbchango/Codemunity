@@ -1,5 +1,6 @@
 import 'dart:io';
-
+import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:code_munnity/models/author.dart';
 import 'package:code_munnity/pages/login_page.dart';
 import 'package:code_munnity/pages/maps_page.dart';
@@ -29,11 +30,14 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-  AuthService _auth = AuthService();
+  final AuthService _auth = AuthService();
   int _selectedIndex = 0;
   final PageStorageBucket _bucket = PageStorageBucket();
-  
+  CollectionReference collRef;
+  Author gAuthor;
+  final prefs = new Preferences();
   static List<Widget> _pages = <Widget>[
     HomeScreen(
       key: PageStorageKey('Home'),
@@ -144,7 +148,9 @@ class _MainPageState extends State<MainPage> {
   void initState() {
     super.initState();
     _configFCM();
-
+    _getAuthorInfo();
+    
+    
   }
 
 
@@ -154,26 +160,10 @@ class _MainPageState extends State<MainPage> {
     
 
     return Scaffold(
-        drawer: getdrawer(test),
+        drawer: getdrawer(gAuthor),
         appBar: AppBar(
           centerTitle: true,
           title: getLogoImg(),
-          actions: <Widget>[
-            Builder(builder: (BuildContext context){
-              return FlatButton(
-                onPressed: () async {
-                  await _auth.signOut();
-                }, 
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Icon(Icons.exit_to_app),
-                    Text("Sign Out")
-                  ],
-                )
-              );
-            })
-          ],
         ),
         body: PageStorage(bucket: _bucket, child: _pages[_selectedIndex],),
         bottomNavigationBar: BottomNavigationBar(
@@ -208,18 +198,39 @@ class _MainPageState extends State<MainPage> {
     
   }
 
+  void _getAuthorInfo() async {
+    
+    User currUser = await _auth.user.first;
+    print(currUser.uid);
+    QuerySnapshot aRef = await FirebaseFirestore.instance.collection('authors').where('uid', isEqualTo: currUser.uid).get();
+
+    setState(() {
+      // guardamos el documento consultado en una instancia de Author
+      gAuthor =  Author.fromJsonMap(aRef.docs.first.data());  
+      gAuthor.id = aRef.docs.first.id;
+      // Transformamos la instancia en string y lo guardamos en las preferencias de usuario
+      prefs.gauthor = gAuthor.toJsonString();
+      // obtenemos el valor del autor guardado en las preferencias de usuario 
+      gAuthor = Author.fromJson(json.decode(prefs.gauthor));
+
+    });
+  }
+
   Widget getdrawer(Author author){
     final prefs = new Preferences();
     final _contentProvider = Provider.of<ContentProvider>(context);
+    // TODO: instancia de los datos de usuario 
+    
+
     return Drawer(
       child: ListView(
         children: <Widget>[
 
             UserAccountsDrawerHeader(
-              accountName: Text(author.name),
-              accountEmail: Text(author.mail),
+              accountName: Text(author==null?'':author.name),
+              accountEmail: Text(author==null?'':author.mail),
               currentAccountPicture: CircleAvatar(
-                                     backgroundImage: NetworkImage(author.avatarimgurl),
+                                     backgroundImage: author == null?AssetImage('assets/images/logo_white_bg.png'):NetworkImage(author.avatarimgurl),
                                      backgroundColor: Colors.transparent,
                                     ),
             ),
@@ -271,8 +282,7 @@ class _MainPageState extends State<MainPage> {
               leading: new Icon(Icons.exit_to_app),
               title: new Text("Salir"),
               onTap: () {
-                prefs.token = "";
-              _contentProvider.token = prefs.token;
+                _auth.signOut();
               Navigator.push(
                 context, MaterialPageRoute(builder: (context) => LoginPage()));
               setState(() {});

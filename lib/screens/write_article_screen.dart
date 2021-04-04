@@ -1,14 +1,13 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:code_munnity/models/article.dart';
-import 'package:code_munnity/models/author.dart';
-import 'package:code_munnity/models/category.dart';
+import 'package:code_munnity/utils/preferences.dart';
+import 'package:loading_animations/loading_animations.dart';
 import 'package:code_munnity/providers/articles_service.dart';
 import 'package:code_munnity/providers/storage_service.dart';
 import 'package:code_munnity/screens/edit_widget.dart';
 import 'package:code_munnity/theme/constants.dart';
 import 'package:code_munnity/utils/label.dart';
-import 'package:code_munnity/utils/utils.dart';
 import 'package:code_munnity/widgets/add_labels_widget.dart';
 import 'package:code_munnity/widgets/label_widget.dart';
 import 'package:code_munnity/widgets/select_category_widget.dart';
@@ -16,6 +15,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:zefyr/zefyr.dart';
+import 'dart:convert';
+import 'package:code_munnity/models/author.dart';
 
 class WriteArticleScreen extends StatefulWidget {
   WriteArticleScreen({Key key}) : super(key: key);
@@ -32,6 +33,7 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
   List<Widget> elements;
   List<Widget> _references;
   dynamic _size;
+  final _prefs = new Preferences();
   File _img ;
   final picker = ImagePicker();
   bool _onSaving = false;
@@ -43,9 +45,10 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
     super.initState();
     elements = new List<Widget>();
     _references = new List<Widget>();
+    Author _gAuthor = Author.fromJson(json.decode(_prefs.gauthor));
     _article = new Article();
     _article.labels = new Labels();
-    _article.idauthor = test.id;
+    _article.idauthor = _gAuthor.id;
     _article.references = new References();
   }
 
@@ -55,10 +58,7 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
     return Scaffold(
       key: _scaffoldKey,
       body: ZefyrScaffold(
-        child: Form(
-          key: formKey,
-          child: _getFormContent()
-        ),
+        child: _onSaving == true ? Center(child: LoadingFlipping.circle(),):Form(key: formKey, child: _getFormContent()),
       ),
     );
   }
@@ -76,7 +76,6 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
         _getTitleInput(),
         _getAbstractInput(),
         _getReferencesBox(),
-
         _getImageContainer(),
         
         Container(
@@ -95,7 +94,7 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
         _getWriteButton(),
         _getSelectCategory(),
         _getSaveButton(),
-        _printArticle()
+        // _printArticle()
       ],
     );
   }
@@ -106,7 +105,7 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
           borderRadius: BorderRadius.circular(15.0)
       ),  
       color: Colors.amber,
-      onPressed: (){
+      onPressed:  (){
           print(_article.toJson());
         }, 
         child: Container(
@@ -126,7 +125,7 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0)
       ),  
-      color: Colors.amber,
+      color: _article.content == null?Colors.amber:Colors.green,
       onPressed: (){
           showModalBottomSheet(
             context: context,
@@ -155,7 +154,7 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0)
         ),  
-        color: Colors.amber,
+        color: _article.content == null?Colors.amber:Colors.green,
         onPressed: (){
           showModalBottomSheet(
             context: context,
@@ -182,7 +181,7 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
 
   Widget _getWriteButton(){
     return MaterialButton(
-      color: Colors.amber,
+      color: _article.content == null?Colors.amber:Colors.green,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0)
       ),  
@@ -233,7 +232,7 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15.0)
       ), 
-      onPressed: _onSaving ? null : _onSave, 
+      onPressed: (_article.idcategory != null && _article.labels.items.length != 0 && _article.content != null ) ? _onSave: null, 
       child: Container(
 
         child: Row(
@@ -443,15 +442,17 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
 
   /// Function that POST the article
   _onSave()async {
+    
     _getLabels();
     if( !formKey.currentState.validate() ) return;
     formKey.currentState.save();
-    
-    if(!formKey.currentState.validate())return;
-    formKey.currentState.save();
+    setState(() {
+      _onSaving = true;
+    });
     if (_img != null) {
       _article.imgurl = await _storageService.uploadImg(_img);
     }
+    
 
     await _service.creatArticle(_article).then(
       (value) {
@@ -467,6 +468,10 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
           ),
           )
         );
+        setState(() {
+          
+          _onSaving = false;
+        });
       }
     );
   }

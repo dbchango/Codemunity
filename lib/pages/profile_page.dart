@@ -1,6 +1,9 @@
+import 'package:code_munnity/models/author.dart';
 import 'package:code_munnity/theme/constants.dart';
+import 'package:code_munnity/utils/preferences.dart';
 import 'package:code_munnity/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'dart:convert';
 class ProfilePage extends StatefulWidget {
   ProfilePage({Key key}) : super(key: key);
 
@@ -9,19 +12,22 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  final _prefs = new Preferences();
+  Author _currentAuthor;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _currentAuthor = Author.fromJson(json.decode(_prefs.gauthor));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       
       appBar: AppBar(
-        actions: [
-          FlatButton(
-            onPressed: (){
-
-            }, 
-            child: Icon(Icons.create_rounded)
-          )
-        ],
+  
         centerTitle: true,
         title: Row(mainAxisSize: MainAxisSize.min, children: [Text("Mi perfil  "), Icon(Icons.account_circle)],),
         ),
@@ -43,7 +49,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 color: Colors.black,
                 child: ClipRRect(
                 borderRadius: BorderRadius.circular(180),
-                child: Image.network(test.avatarimgurl)
+                child: Image.network(_currentAuthor.avatarimgurl)
               ),
               )
             ),
@@ -58,7 +64,7 @@ class _ProfilePageState extends State<ProfilePage> {
               mainAxisSize: MainAxisSize.min, 
               children: [
                 Text(
-                  test.name + " " + test.surname, 
+                  _currentAuthor.name + " " + _currentAuthor.surname, 
                   style: Theme.of(context)
                       .textTheme
                       .caption
@@ -73,7 +79,7 @@ class _ProfilePageState extends State<ProfilePage> {
               textAlign: TextAlign.center,
             ),
             Text(
-              test.mail, 
+              _currentAuthor.mail, 
               style: Theme.of(context)
                       .textTheme
                       .caption
@@ -88,7 +94,7 @@ class _ProfilePageState extends State<ProfilePage> {
               textAlign: TextAlign.center,
             ),
             Text(
-              test.knowledgearea, 
+              _currentAuthor.knowledgearea, 
               style: Theme.of(context)
                       .textTheme
                       .caption
@@ -112,7 +118,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       .textTheme
                       .caption
                       .copyWith(fontSize: 17),
-                      text: test.about
+                      text: _currentAuthor.about
                     ),  
                   overflow: TextOverflow.ellipsis,
                   ),

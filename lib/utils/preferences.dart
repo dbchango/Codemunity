@@ -1,6 +1,9 @@
 
+import 'package:code_munnity/models/author.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'dart:convert';
+
 class Preferences{
   static final Preferences _instance = new Preferences._internal();
 
@@ -33,7 +36,12 @@ class Preferences{
   }
 
   get  gauthor{
-    return _prefs.getString("gauthor") ?? "";
+    return _prefs.getString('gauthor') ?? "";
+  }
+
+  set  gauthor(String value){
+    _prefs.setString('gauthor', value);
+
   }
 
   get token {

@@ -1,9 +1,12 @@
 import 'package:code_munnity/bloc/login_bloc.dart';
+import 'package:code_munnity/pages/main_page.dart';
 import 'package:code_munnity/providers/auth.dart';
 import 'package:code_munnity/providers/provider_bloc.dart';
 import 'package:code_munnity/theme/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:cupertino_stepper/cupertino_stepper.dart';
+import 'package:flutter/cupertino.dart';
 
 class RegisterPage extends StatefulWidget {
   RegisterPage({Key key}) : super(key: key);
@@ -13,6 +16,8 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+
+  int currentStep = 0;
   final AuthService _auth = AuthService();
 
   @override
@@ -208,8 +213,59 @@ class _RegisterPageState extends State<RegisterPage> {
     }else{
       print("Registrado");
       print(result);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => MainPage()));
     }
   }
 
+  CupertinoStepper _buildStepper(StepperType type){
+    final canCancel = currentStep > 0;
+    final canContinue = currentStep < 3;
+
+    return CupertinoStepper(
+      type: type,
+      currentStep: currentStep,
+      onStepTapped: (step)=> setState(()=> currentStep = step),
+      onStepCancel: canCancel ? () => setState(()=> --currentStep):null,
+      onStepContinue: canContinue ? () => setState(()=>++currentStep):null,
+      steps: [
+        Step(
+          title: Text(''), 
+          content: LimitedBox(
+            maxWidth: 300,
+            maxHeight: 300,
+            child: Container(
+              color: CupertinoColors.systemGrey,
+            ),
+          )
+        )
+        
+      ]
+    );
+
+  }
+
+  Step _buildStep({
+    Widget title, 
+    Widget subtitle,
+    StepState state = StepState.indexed,
+    bool isActive = false
+  }){
+    return Step(
+      title: title,
+      subtitle: subtitle,
+      state: state,
+      isActive: isActive, 
+      content: LimitedBox(
+        maxWidth: 300,
+        maxHeight: 300,
+        child: Container(
+          color: CupertinoColors.systemGrey,
+        ),
+      )
+    );
+  }
+
+  
   
 }

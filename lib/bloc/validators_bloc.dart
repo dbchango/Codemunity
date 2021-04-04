@@ -9,7 +9,7 @@ class Validators {
       if (regExp.hasMatch(data)) {
         sink.add(data);
       } else {
-        sink.addError('El correo electrónico no es válido');
+        sink.addError('El correo electrónico no es válido.');
       }
     },
   );
@@ -19,8 +19,49 @@ class Validators {
       if (data.length >= 5) {
         sink.add(data);
       } else {
-        sink.addError('La contraseña debe tener al menos 5 caracteres');
+        sink.addError('La contraseña debe tener al menos 5 caracteres.');
       }
     },
   );
+
+  final nameValidator = StreamTransformer<String, String>.fromHandlers(
+    handleData: (data, sink) {
+      if (data.length >= 1) {
+        sink.add(data);
+      } else {
+        sink.addError('No ha ingresado su nombre.');
+      }
+    },
+  );
+
+  final surnameValidator = StreamTransformer<String, String>.fromHandlers(
+    handleData: (data, sink) {
+      if (data.length >= 1) {
+        sink.add(data);
+      } else {
+        sink.addError('No ha ingresado su apellido.');
+      }
+    },
+  );
+
+  final knowledgeAreaValidator = StreamTransformer<String, String>.fromHandlers(
+    handleData: (data, sink) {
+      if (data.length >= 1) {
+        sink.add(data);
+      } else {
+        sink.addError('No ha ingresado su área de conocimiento.');
+      }
+    },
+  );
+
+  final aboutValidator = StreamTransformer<String, String>.fromHandlers(
+    handleData: (data, sink) {
+      if (data.length >= 10) {
+        sink.add(data);
+      } else {
+        sink.addError('Su descripción debe contener al menos 10 caracteres.');
+      }
+    },
+  );
+
 }

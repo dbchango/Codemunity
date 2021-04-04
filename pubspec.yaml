@@ -46,19 +46,23 @@ dependencies:
   firebase_messaging: ^6.0.12
   rxdart: ^0.20.0
   jwt_decoder: ^1.0.4
+  cupertino_stepper: ^0.1.2
+  flutter_spinkit: "^4.1.2"
+  loading_animations: "^2.1.0"
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_launcher_icons: ^0.9.0
+  flutter_launcher_icons: ^0.8.1
 
 flutter_icons:
   ios: true
   android: true
-
+  image_path: "assets/launcher/cm_icon1.png"
   image_path_android: "assets/launcher/cm_icon1.png"
+  image_path_ios: "assets/launcher/cm_icon1.png"
   adaptive_icon_background: "assets/launcher/background.png"
   adaptive_icon_foreground: "assets/launcher/foreground.png"
 # For information on the generic Dart part of this file, see the

@@ -15,6 +15,7 @@ import 'package:cupertino_stepper/cupertino_stepper.dart';
 import 'dart:io';
 
 import 'package:image_picker/image_picker.dart';
+import 'package:loading_animations/loading_animations.dart';
 
 class AuthorRegisterPage extends StatefulWidget {
   AuthorRegisterPage({Key key}) : super(key: key);
@@ -50,7 +51,7 @@ class _AuthorRegisterPageState extends State<AuthorRegisterPage> {
     return Container(
        child: Scaffold(
          key: scaffoldKey,
-      body: Container(
+      body:  Container(
         child: SafeArea(
           child: OrientationBuilder(
             builder: (BuildContext context, Orientation orientation){
@@ -71,7 +72,7 @@ class _AuthorRegisterPageState extends State<AuthorRegisterPage> {
   }
   CupertinoStepper _buildStepper(StepperType type) {
     final canCancel = currentStep > 0;
-    final canContinue = currentStep < 4;
+    final canContinue = currentStep < 3;
     
     return CupertinoStepper(
       type: type,
@@ -114,11 +115,13 @@ class _AuthorRegisterPageState extends State<AuthorRegisterPage> {
           _buildStep(
             title: Text('Step 4'),
             subtitle: Text('Finalizar'),
-            isActive: 3 == currentStep,
+           
             state: 3 == currentStep
                 ? StepState.editing
                 : 3 < currentStep ? StepState.complete : StepState.indexed,
-            content: _getSubmit(context)
+            content: Container(
+              child:  _getSubmit(context)
+            )
           ),
       ],
     );
@@ -226,22 +229,23 @@ class _AuthorRegisterPageState extends State<AuthorRegisterPage> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5.0),
             ),
-            onPressed: (snapshot.hasData && formFlag) ? () => _submit(bloc, context) : null);
+            onPressed: (snapshot.hasData && onSaving == false && formFlag) ? () => _submit(bloc, context) : null);
       },
     );
   }
 
   _submit(LoginBloc bloc, BuildContext context) async {
     if( !_formKey.currentState.validate() ) return;
-    setState(() {
-      onSaving = true;
-    });
+    
     _formKey.currentState.save();
     if (_img != null) {
       _author.avatarimgurl = await _service.uploadImg(_img);
     }else{
       _author.avatarimgurl = 'https://firebasestorage.googleapis.com/v0/b/consultoriovet-eb010.appspot.com/o/unknown_user.png?alt=media&token=a18973b1-50d7-41cc-a4cd-d836ff4f94f8';
     }
+    setState(() {
+      onSaving = true;
+    });
     dynamic result = await  _auth.createUserWithEmailAndPassword(bloc.email, bloc.password);
     if(result==null){
       print("Error al registrar");
@@ -262,10 +266,12 @@ class _AuthorRegisterPageState extends State<AuthorRegisterPage> {
         scaffoldKey.currentState.showSnackBar(
           SnackBar(content: Text("Usuario creado con éxito."))
         );
-        setState(() {
-          onSaving = false;
-        });
+        
+        
       }
+      setState(() {
+        onSaving = false;
+      });
         Navigator.push(
           context, MaterialPageRoute(builder: (context) => MainPage()));
       });
@@ -298,7 +304,7 @@ class _AuthorRegisterPageState extends State<AuthorRegisterPage> {
               print(formFlag);
               print(FirebaseAuth.instance.currentUser);
             },
-            focusNode: new FocusNode(),
+
             decoration: InputDecoration(
               
               labelText: 'Nombre',
@@ -326,7 +332,7 @@ class _AuthorRegisterPageState extends State<AuthorRegisterPage> {
         formFlag = _formKey.currentState.validate();
               print(formFlag);
       },
-      focusNode: new FocusNode(),
+
       decoration: InputDecoration(
         labelText: 'Apellido',
         prefixIcon: Icon(Icons.text_format)
@@ -353,7 +359,7 @@ class _AuthorRegisterPageState extends State<AuthorRegisterPage> {
         formFlag = _formKey.currentState.validate();
               print(formFlag);
       },
-      focusNode: new FocusNode(),
+
       decoration: InputDecoration(
         labelText: 'Área de conocimiento',
         prefixIcon: Icon(Icons.text_fields_outlined)
@@ -380,7 +386,7 @@ class _AuthorRegisterPageState extends State<AuthorRegisterPage> {
         formFlag = _formKey.currentState.validate();
               print(formFlag);
       },
-      focusNode: new FocusNode(),
+
       decoration: InputDecoration(
         labelText: 'Acerca de mi',
         prefixIcon: Icon(Icons.info)
@@ -416,22 +422,48 @@ class _AuthorRegisterPageState extends State<AuthorRegisterPage> {
               padding: EdgeInsets.all(5.0),
               child: Text("Subir una imágen"),
             ),
-            GestureDetector(
-              onTap: _selectImg,
-              child: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5)
-              ),
-              child: Icon(Icons.upload_file),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap: _selectImg,
+                  child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5)
+                  ),
+                  child: Icon(Icons.upload_file, color: Colors.blue,),
 
-            ) 
-            )
+                ) 
+                ),
+                GestureDetector(
+                  onTap: _deleteImage,
+                  child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5)
+                  ),
+                  child: Icon(Icons.delete_forever, color: Colors.red),
+
+                ) 
+                ),
+              ],
+            ),
+            
+            
           ],
         )
       ),
     );
+  }
+
+  void _deleteImage(){
+    print('Imagen eliminada');
+    setState(() {
+      _img = null;
+    });
   }
 
   /// This function executes the method to upload to select and upload an image

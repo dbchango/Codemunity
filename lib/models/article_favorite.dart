@@ -9,8 +9,9 @@ ArticleFavorite articleFromJson(String str) => ArticleFavorite.fromJson(json.dec
 String articleToJson(ArticleFavorite data) => json.encode(data.toJson());
 
 class ArticleFavorite{
-  String idUserFavorite;
   String id;
+  String idUserFavorite;
+  String idArticle;
   String title;
   Timestamp date;
   References references;
@@ -36,7 +37,8 @@ class ArticleFavorite{
     this.imgurl,
     this.idcategory,
     this.category,
-    this.abstract
+    this.abstract,
+    this.idArticle
   });
 
   factory ArticleFavorite.fromJson(Map<dynamic, dynamic> json) => ArticleFavorite(
@@ -52,21 +54,25 @@ class ArticleFavorite{
       imgurl: json['imgurl'],
       idcategory: json['idcategory'],
       category:Category.fromJsonMap(json['category']),
-      idUserFavorite:json['idUserFavorite']
+      idUserFavorite:json['idUserFavorite'],
+      idArticle: json['idArticle']
   );
 
   Map<String, dynamic> toJson() => {
     "title": title, 
     "idauthor": idauthor,
     "labels": labels.toJson(), 
+    "category": category.toJson(),
     "content": content, 
-    "author": author,
+    "author": author.toJson(),
     "references": references.toJson(),
     "imgurl" : imgurl,
     "date" : date,
     "idcategory" :idcategory,
     "abstract" : abstract,
-    "idUserFavorite" : idUserFavorite
+    "idUserFavorite" : idUserFavorite,
+    "id":id,
+    "idArticle": idArticle
   };
 }
 

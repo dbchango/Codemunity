@@ -22,6 +22,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final UserProvider userProvider = UserProvider(); 
   final AuthService auth = AuthService();
+  bool _onSaving = false;
   @override
   void initState() {
     
@@ -264,15 +265,21 @@ class _LoginPageState extends State<LoginPage> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5.0),
             ),
-            onPressed: snapshot.hasData ? () => _submitFirebaseAppEP(bloc, context) : null);
+            onPressed: (snapshot.hasData && _onSaving == false) ?  () => _submitFirebaseAppEP(bloc, context) : null);
       },
     );
   }
 
   _submitFirebaseAppEP(LoginBloc bloc, BuildContext context) async {
+    setState(() {
+      _onSaving = true;
+    });
     dynamic result = await auth.signInWithEmailAndPassword(bloc.email, bloc.password);
     if(result == null){
       print("Error signing in");
+      setState(() {
+        _onSaving = false;
+      });
     }else{
       print("Siggned in");
       print(result);

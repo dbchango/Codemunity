@@ -17,6 +17,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  CollectionReference _articlesCollection = FirebaseFirestore.instance.collection('articles_favorites');
   ArticleService _service;
   Articles _list;
   final prefs = new Preferences();
@@ -52,8 +53,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: snapshot.data.docs.map((DocumentSnapshot d) {
                   Article art = Article.fromJson(d.data());
                   art.id = d.id;
-                  return ArticleBoxWidget(
-                    article: art,
+                  return Card(
+                    color: Colors.black12.withOpacity(0.001),
+                    child: Column(
+                      children: [
+                        
+                        ArticleBoxWidget(
+                          article: art,
+                        ),
+                        _getFavoritesButton(art),
+                      ],
+                    ),
                   );
                 } ).toList(),
               )
@@ -64,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _getFavoritesButton(Article articleF){
     return IconButton(
-      icon: Icon(Icons.favorite), 
+      icon: Icon(Icons.star_border), 
       onPressed: () {
         _addFavorites(articleF);
       },
@@ -72,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _addFavorites(Article article){
-    CollectionReference articlesCollection = FirebaseFirestore.instance.collection('articles_favorites');
+    
     ArticleFavorite _favorite = ArticleFavorite(
       idUserFavorite: gAuthor.uid,
       abstract: article.abstract, 
@@ -80,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
       category: article.category,
       content: article.content,
       date: article.date,
-      id: article.id,
+      idArticle: article.id,
       idauthor: article.idauthor,
       idcategory: article.idcategory,
       imgurl: article.imgurl,
@@ -88,11 +98,22 @@ class _HomeScreenState extends State<HomeScreen> {
       references: article.references,
       title: article.title
     );
+    print(_favorite.toJson());
+    _articlesCollection.add(_favorite.toJson()).then(
+      (value) {
+        print(value);
+        scaffoldKey.currentState.showSnackBar(
+          SnackBar(content: Text("Articulo de id: ${_favorite.idArticle} agregado a favoritos"))
+        );
+      }
+      
+    );
+    /*
     articlesCollection.add(_favorite.toJson()).then((value) {
       scaffoldKey.currentState.showSnackBar(
           SnackBar(content: Text("Articulo de id: ${_favorite.id} agregado a favoritos"))
         );
-    });
+    });*/
   }
 
   

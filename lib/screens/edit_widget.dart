@@ -64,8 +64,11 @@ class _EditWidgetState extends State<EditWidget> {
   void _saveDocument(BuildContext context) {
     
     final contents = jsonEncode(_controller.document);
-    widget.article.content = contents;
-    print(widget.article.content);
+    
+    setState(() {
+      widget.article.content = contents;
+    print(widget.article.content);  
+    });
     
   }
 }

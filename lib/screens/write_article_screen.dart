@@ -94,7 +94,7 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
         _getWriteButton(),
         _getSelectCategory(),
         _getSaveButton(),
-        // _printArticle()
+        _printArticle()
       ],
     );
   }
@@ -125,7 +125,7 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0)
       ),  
-      color: _article.content == null?Colors.amber:Colors.green,
+      color: _article.labels.items.isEmpty?Colors.amber:Colors.green,
       onPressed: (){
           showModalBottomSheet(
             context: context,
@@ -154,7 +154,7 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0)
         ),  
-        color: _article.content == null?Colors.amber:Colors.green,
+        color: _article.idcategory == null ?Colors.amber:Colors.green,
         onPressed: (){
           showModalBottomSheet(
             context: context,
@@ -164,6 +164,9 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
           ).then((value) {
               print("Modal cerrado");
               print(_article.toJson());
+              setState(() {
+                
+              });
             }
           );
         }, 
@@ -181,12 +184,16 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
 
   Widget _getWriteButton(){
     return MaterialButton(
-      color: _article.content == null?Colors.amber:Colors.green,
+      color: (_article.content == null || _article.content == ' ') ?Colors.amber:Colors.green,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0)
       ),  
       onPressed: (){
-            Navigator.push(context,  MaterialPageRoute(builder: (context)=> EditWidget(article: _article,)));
+            Navigator.push(context,  MaterialPageRoute(builder: (context)=> EditWidget(article: _article,))) .then((value) {
+              setState(() {
+                
+              });
+            });
       }, 
       child: Container(
       child: Row(
@@ -232,7 +239,7 @@ class _WriteArticleScreenState extends State<WriteArticleScreen> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15.0)
       ), 
-      onPressed: (_article.idcategory != null && _article.labels.items.length != 0 && _article.content != null ) ? _onSave: null, 
+      onPressed: (_article.labels.items.isNotEmpty  && _article.idcategory != null && _article.content != null ) ? _onSave: null, 
       child: Container(
 
         child: Row(

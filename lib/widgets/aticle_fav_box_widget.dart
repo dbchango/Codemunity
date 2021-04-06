@@ -1,31 +1,27 @@
-import 'package:code_munnity/models/article.dart';
+import 'package:code_munnity/models/article_favorite.dart';
 import 'package:code_munnity/pages/article_page.dart';
 import 'package:code_munnity/widgets/author_box_widget.dart';
 import 'package:flutter/material.dart';
 
-class ArticleBoxWidget extends StatelessWidget {
-  final Article article;
-
-  //final String assetName;
-  const ArticleBoxWidget(
-    {
-      Key key,
-      this.article
-      //this.assetName
-    }
-    ) : super(key: key);
+class ArticleFavoriteBoxWidget extends StatelessWidget {
+  final ArticleFavorite article;
+  const ArticleFavoriteBoxWidget({Key key, this.article}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    print(article.toJson());
     return GestureDetector(
       onTap: (){
         Navigator.push(
           context, 
           MaterialPageRoute(builder: 
-          (context)=>ArticlePage(
-            idArticle:article.id
-          )));
+          (context){
+            print(article);
+            return ArticlePage(
+            idArticle:article.idArticle
+          );
+          }));
       },
       child: Card(
         color: Theme.of(context).cardColor,
@@ -114,18 +110,4 @@ class ArticleBoxWidget extends StatelessWidget {
           ),
     );
   }
-  
-  Widget _getCounter(String label, IconData icon, int number){
-      return Padding(
-        padding: const EdgeInsets.all(4.0),
-        child: Row(
-          children: <Widget>[
-            Icon(icon),
-            Text(number.toString(), style: TextStyle(fontStyle: FontStyle.italic, ),),
-            Text(label, style: TextStyle(fontWeight: FontWeight.bold,),)
-
-          ],
-        ),
-      );
-    }
 }
